@@ -22,11 +22,21 @@
     .voter-page .masthead {
       flex-shrink: 0;
       padding: 0.25rem 1rem 0.2rem;
+      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
     }
 
     .voter-page .masthead-title    { font-size: clamp(1.5rem, 7vw, 2.2rem); }
     .voter-page .masthead-eyebrow,
     .voter-page .masthead-sub      { font-size: 0.52rem; }
+
+    /* Voting módban a masthead teljesen eltűnik → több hely a kártyának */
+    body.voting-mode .masthead {
+      max-height: 0;
+      opacity: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
 
     main {
       flex: 1;
@@ -235,8 +245,10 @@
       justify-content: center;
       align-items: center;
       gap: 1.25rem;
-      padding: 0.3rem 0 0.15rem;
+      padding: 0.3rem 0;
+      padding-bottom: max(0.3rem, env(safe-area-inset-bottom)); /* iPhone home indicator */
       flex-shrink: 0;
+      background: var(--paper);
     }
 
     .action-item {
@@ -397,6 +409,8 @@
         document.getElementById('screen-' + s).classList.remove('active')
       );
       document.getElementById('screen-' + id).classList.add('active');
+      // Voting módban elrejtjük a mastheadet → teljes képernyő a kártyának
+      document.body.classList.toggle('voting-mode', id === 'voting');
     }
 
     // ── Card populate ──────────────────────────────────────────────
@@ -410,9 +424,17 @@
       mono.textContent  = initials(poet.name);
       mono.style.display = 'none';
       photo.style.display = '';
+
+      const imgSrc = poetImages[poet.name] || '';
       photo.onload  = () => { mono.style.display = 'none'; };
       photo.onerror = () => { photo.style.display = 'none'; mono.style.display = 'flex'; };
-      photo.src = poetImages[poet.name] || '';
+      photo.src = imgSrc;
+
+      // Cached képeknél onload nem tüzel — azonnal ellenőrzünk
+      if (photo.complete) {
+        if (photo.naturalWidth > 0) mono.style.display = 'none';
+        else { photo.style.display = 'none'; mono.style.display = 'flex'; }
+      }
 
       const card = document.getElementById('tinder-card');
       card.classList.remove('snapping','flying');

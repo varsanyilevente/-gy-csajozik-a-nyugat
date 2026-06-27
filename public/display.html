@@ -568,7 +568,8 @@
     }
 
     // ── Jelenet-váltás ─────────────────────────────────────────────
-    let currentScene = 'waiting';
+    let currentScene  = 'waiting';
+    let totalVoters   = 0;  // regisztrált játékosok száma
 
     function switchScene(id) {
       if (currentScene === id) return;
@@ -584,7 +585,7 @@
       document.getElementById('perf-count').textContent = totalScore || 0;
       const sub = document.getElementById('perf-votes-sub');
       if (sub) sub.textContent = (voteCount || 0) + ' szavazó';
-      updateBar(totalScore || 0, voteCount || 0);
+      updateBar(totalScore || 0);
       document.getElementById('perf-mono').textContent  = initials(poet.name);
 
       const photo = document.getElementById('perf-photo');
@@ -594,27 +595,27 @@
     }
 
     // ── Szavazat bump + sáv frissítés ────────────────────────────
-    function bumpCount(totalScore, voteCount) {
+    function bumpCount(totalScore) {
       const el = document.getElementById('perf-count');
       el.textContent = totalScore;
       el.classList.remove('bump');
       void el.offsetWidth;
       el.classList.add('bump');
       setTimeout(() => el.classList.remove('bump'), 300);
-      updateBar(totalScore, voteCount);
+      updateBar(totalScore);
     }
 
-    function updateBar(totalScore, voteCount) {
-      const max    = voteCount * 2;
-      const pct    = max > 0 ? Math.round((totalScore / max) * 100) : 0;
-      const fill   = document.getElementById('perf-bar-fill');
-      const pctEl  = document.getElementById('perf-bar-pct');
-      const maxEl  = document.getElementById('perf-bar-max');
+    function updateBar(totalScore) {
+      const max   = totalVoters * 2;  // minden játékos max 2 pontot adhat
+      const pct   = max > 0 ? (totalScore / max) * 100 : 0;
+      const fill  = document.getElementById('perf-bar-fill');
+      const pctEl = document.getElementById('perf-bar-pct');
+      const maxEl = document.getElementById('perf-bar-max');
       if (!fill) return;
-      fill.style.width = pct + '%';
+      fill.style.width = Math.min(pct, 100) + '%';
       fill.classList.toggle('high', pct >= 60);
-      if (pctEl)  pctEl.textContent  = pct + '% hatékonyság';
-      if (maxEl)  maxEl.textContent  = 'max ' + max + ' pont';
+      if (pctEl) pctEl.textContent = Math.round(pct) + '% (' + totalScore + ' / ' + max + ' pont)';
+      if (maxEl) maxEl.textContent = 'max ' + max + ' pont';
     }
 
     // ── Végeredmény jelenet ────────────────────────────────────────
@@ -680,16 +681,21 @@
     }
 
     // ── Socket events ──────────────────────────────────────────────
-    socket.on('state', applyState);
+    socket.on('state', s => {
+      if (s.voterCount !== undefined) totalVoters = s.voterCount;
+      applyState(s);
+    });
+
+    socket.on('voter-count', count => { totalVoters = count; });
 
     socket.on('scores-update', scores => {
       const active = scores.find(s => s.isActive);
       if (!active) return;
       if (currentScene === 'performer') {
-        bumpCount(active.totalScore, active.voteCount);
+        bumpCount(active.totalScore);
       } else {
         document.getElementById('perf-count').textContent = active.totalScore;
-        updateBar(active.totalScore, active.voteCount);
+        updateBar(active.totalScore);
       }
       const sub = document.getElementById('perf-votes-sub');
       if (sub) sub.textContent = active.voteCount + ' szavazó';

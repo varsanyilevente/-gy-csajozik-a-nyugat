@@ -128,6 +128,7 @@ function buildClientState(socketId) {
     scores:           buildScores(),
     hasVoted:         voter ? voter.hasVoted : false,
     voterName:        name || null,
+    voterCount:       state.voters.size,
   };
 }
 
