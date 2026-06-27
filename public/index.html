@@ -2,22 +2,27 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Nyugat — Szavazás</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* position:fixed + inset:0 a legmegbízhatóbb mobil layout —
-       nem függ a vh/dvh támogatástól, mindig a látható területet tölti ki */
-    html, body { height: 100%; margin: 0; }
+    /* 100dvh = dynamic viewport height: pontosan a látható terület,
+       URL sáv + Android navigáció nélkül. Chrome 108+, Safari 15.4+ */
+    html { margin: 0; padding: 0; height: 100%; }
 
     body {
-      position: fixed;
-      inset: 0;
+      margin: 0;
+      padding: 0;
+      height: 100vh;           /* fallback régi böngészőkre */
+      height: 100dvh;          /* modern: URL sáv + nav bar NEM számít bele */
+      max-height: 100dvh;
       overflow: hidden;
       touch-action: none;
       display: flex;
       flex-direction: column;
     }
+
+    /* A dvh-t nem ismerő régi böngészőkre JS fallback */
 
     .voter-page .masthead {
       flex-shrink: 0;
@@ -251,7 +256,7 @@
       align-items: center;
       gap: 1.25rem;
       padding: 0.3rem 0;
-      padding-bottom: max(0.3rem, env(safe-area-inset-bottom)); /* iPhone home indicator */
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
       flex-shrink: 0;
       background: var(--paper);
     }
@@ -387,13 +392,6 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // window.innerHeight = a valódi látható terület, böngésző + navigáció sáv nélkül
-    function fixViewport() {
-      document.body.style.height = window.innerHeight + 'px';
-    }
-    fixViewport();
-    window.addEventListener('resize', fixViewport);
-
     const socket = io();
 
     let voterName = null;
