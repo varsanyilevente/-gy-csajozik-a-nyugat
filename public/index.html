@@ -38,12 +38,17 @@
       padding-bottom: 0;
     }
 
+    /* style.css-ből felülírjuk a main korlátozásait — teljes szélességet akarunk */
     main {
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      max-width: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
     }
 
     /* ── Screen system ───────────────────────────────────────────── */
@@ -98,8 +103,8 @@
 
     /* ── TINDER CARD SCREEN ──────────────────────────────────────── */
     #screen-voting {
-      padding: 0.5rem;
-      gap: 0.5rem;
+      padding: 0.3rem 0 0;    /* nincs oldalsó padding → kártya teljes szélesség */
+      gap: 0.3rem;
     }
 
     .card-wrap {
@@ -107,13 +112,13 @@
       min-height: 0; /* kötelező — enélkül kinyomja a gombokat */
       position: relative;
       overflow: hidden;
-      border-radius: 14px;
+      border-radius: 0;   /* teljes szélességű, éles szélek */
     }
 
     .tinder-card {
       position: absolute;
       inset: 0;
-      border-radius: 14px;
+      border-radius: 0;
       overflow: hidden;
       background: var(--ink);
       cursor: grab;
@@ -382,6 +387,13 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    // window.innerHeight = a valódi látható terület, böngésző + navigáció sáv nélkül
+    function fixViewport() {
+      document.body.style.height = window.innerHeight + 'px';
+    }
+    fixViewport();
+    window.addEventListener('resize', fixViewport);
+
     const socket = io();
 
     let voterName = null;
