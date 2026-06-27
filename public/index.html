@@ -6,42 +6,29 @@
   <title>Nyugat — Szavazás</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* 100dvh = dynamic viewport height: pontosan a látható terület,
-       URL sáv + Android navigáció nélkül. Chrome 108+, Safari 15.4+ */
-    html { margin: 0; padding: 0; height: 100%; }
+    html, body { margin: 0; padding: 0; }
 
     body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;           /* fallback régi böngészőkre */
-      height: 100dvh;          /* modern: URL sáv + nav bar NEM számít bele */
-      max-height: 100dvh;
+      /* JS beállítja a pontos magasságot visualViewport alapján.
+         Ez az egyetlen megbízható módszer Chrome/Android URL sáv + nav bar esetén. */
+      height: 100dvh;          /* CSS fallback ha a JS nem fut le */
       overflow: hidden;
       touch-action: none;
       display: flex;
       flex-direction: column;
     }
 
-    /* A dvh-t nem ismerő régi böngészőkre JS fallback */
-
     .voter-page .masthead {
       flex-shrink: 0;
       padding: 0.25rem 1rem 0.2rem;
-      transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
-      overflow: hidden;
     }
 
     .voter-page .masthead-title    { font-size: clamp(1.5rem, 7vw, 2.2rem); }
     .voter-page .masthead-eyebrow,
     .voter-page .masthead-sub      { font-size: 0.52rem; }
 
-    /* Voting módban a masthead teljesen eltűnik → több hely a kártyának */
-    body.voting-mode .masthead {
-      max-height: 0;
-      opacity: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-    }
+    /* Voting módban: display:none — max-height:0 hagy maradék magasságot */
+    body.voting-mode .masthead { display: none; }
 
     /* style.css-ből felülírjuk a main korlátozásait — teljes szélességet akarunk */
     main {
@@ -392,6 +379,15 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
+    // visualViewport.height = a valódi látható pixel, URL sáv + nav bar nélkül.
+    // Ez megbízhatóbb mint window.innerHeight vagy 100dvh Android Chrome-on.
+    function pinBodyHeight() {
+      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      document.body.style.height = Math.round(h) + 'px';
+    }
+    pinBodyHeight();
+    (window.visualViewport || window).addEventListener('resize', pinBodyHeight);
+
     const socket = io();
 
     let voterName = null;
