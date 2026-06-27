@@ -236,7 +236,8 @@
     }
 
     .perf-count.bump {
-      transform: scale(1.12);
+      transform: scale(1.2);
+      color: var(--gold);
     }
 
     .perf-count-sub {
@@ -596,11 +597,15 @@
 
     socket.on('scores-update', scores => {
       const active = scores.find(s => s.isActive);
-      if (active && currentScene === 'performer') {
+      if (!active) return;
+      // Mindig frissítjük — ha a performer scene aktív, bumppel animálunk
+      if (currentScene === 'performer') {
         bumpCount(active.totalScore);
-        const sub = document.getElementById('perf-votes-sub');
-        if (sub) sub.textContent = active.voteCount + ' szavazó';
+      } else {
+        document.getElementById('perf-count').textContent = active.totalScore;
       }
+      const sub = document.getElementById('perf-votes-sub');
+      if (sub) sub.textContent = active.voteCount + ' szavazó';
     });
 
     socket.on('phase-change', () => socket.emit('request-state'));
