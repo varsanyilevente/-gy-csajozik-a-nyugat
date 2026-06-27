@@ -63,6 +63,7 @@ io.on('connection', (socket) => {
 
     socket.emit('vote-accepted', { rating });
     io.emit('scores-update', buildScores());
+    io.emit('vote-cast', { rating });
   });
 
   // ─── Admin events ───────────────────────────────────────────────────────────
