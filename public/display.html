@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="hu">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nyugat — Kivetítő</title>
+  <title>Nyugat â€” KivetÃ­tÅ‘</title>
   <link rel="stylesheet" href="style.css">
   <style>
     html, body { height: 100%; overflow: hidden; background: var(--paper); }
 
-    /* ── Scene system ──────────────────────────────────────────── */
+    /* â”€â”€ Scene system â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .scene {
       position: fixed;
       inset: 0;
@@ -21,9 +21,9 @@
     }
     .scene.active { opacity: 1; pointer-events: auto; }
 
-    /* ═══════════════════════════════════════════════════════════
-       JELENET 1 — VÁRAKOZÁS
-    ═══════════════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       JELENET 1 â€” VÃRAKOZÃS
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #scene-waiting {
       align-items: center;
       justify-content: center;
@@ -106,9 +106,9 @@
       50%       { opacity: 1; }
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       JELENET 2 — ELŐADÓ
-    ═══════════════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       JELENET 2 â€” ELÅADÃ“
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #scene-performer { flex-direction: row; }
 
     /* Left: image */
@@ -133,15 +133,6 @@
       transition: opacity 0.8s ease;
     }
 
-    .perf-monogram {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(5rem, 12vw, 10rem);
-      font-weight: 900;
-      color: var(--paper);
-      opacity: 0.15;
-      user-select: none;
-      z-index: 1;
-    }
 
     /* gradient overlay on image */
     .perf-img-side::after {
@@ -248,7 +239,7 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Töltősáv */
+    /* TÃ¶ltÅ‘sÃ¡v */
     .score-bar-outer {
       width: 100%;
       margin-top: 1rem;
@@ -284,7 +275,7 @@
 
     .score-bar-fill.high { background: var(--gold); }
 
-    /* Belső animált csík */
+    /* BelsÅ‘ animÃ¡lt csÃ­k */
     .score-bar-fill::after {
       content: '';
       position: absolute;
@@ -307,7 +298,7 @@
       font-style: italic;
     }
 
-    /* ── Lebegő szavazat ikonok ───────────────────────────────────── */
+    /* â”€â”€ LebegÅ‘ szavazat ikonok â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
     .vote-fx {
       position: absolute;
       inset: 0;
@@ -315,7 +306,7 @@
       overflow: visible;
     }
 
-    /* 5 különböző füst-szerű pálya — JS random választja */
+    /* 5 kÃ¼lÃ¶nbÃ¶zÅ‘ fÃ¼st-szerÅ± pÃ¡lya â€” JS random vÃ¡lasztja */
     @keyframes vf1 {
       0%   { transform: translate(0,0)         scale(1)    rotate(0deg);   opacity:1; }
       20%  { transform: translate(12px,-28px)  scale(1.15) rotate(7deg);   opacity:1; }
@@ -362,9 +353,9 @@
       z-index: 20;
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       JELENET 3 — VÉGEREDMÉNY
-    ═══════════════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       JELENET 3 â€” VÃ‰GEREDMÃ‰NY
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     #scene-results {
       padding: 0;
       overflow: hidden;
@@ -471,13 +462,6 @@
       display: block;
     }
 
-    .result-thumb-mono {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      font-weight: 900;
-      color: var(--paper);
-      opacity: 0.35;
-    }
 
     .result-info { min-width: 0; }
 
@@ -529,44 +513,43 @@
 </head>
 <body>
 
-  <!-- ════════════════════════════════════════════════════════════
-       JELENET 1: VÁRAKOZÁS
-  ════════════════════════════════════════════════════════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       JELENET 1: VÃRAKOZÃS
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div id="scene-waiting" class="scene active">
     <div class="w-frame">
-      <p class="w-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</p>
+      <p class="w-eyebrow">I. Ã‰VFOLYAM Â· 1908 JANUÃR 1. Â· I. SZÃM</p>
       <div class="w-title">NYUGAT</div>
-      <p class="w-sub">A „Figyelő" új folyama &mdash; Főszerkesztő: Ignotus</p>
+      <p class="w-sub">A â€žFigyelÅ‘" Ãºj folyama &mdash; FÅ‘szerkesztÅ‘: Ignotus</p>
       <hr class="w-divider">
-      <p class="w-tagline">Így csajozik a Nyugat</p>
-      <div class="w-ornament">❧ &nbsp; ✦ &nbsp; ❧</div>
-      <p class="w-waiting">Az előadás hamarosan kezdődik&hellip;</p>
+      <p class="w-tagline">Ãgy csajozik a Nyugat</p>
+      <div class="w-ornament">â§ &nbsp; âœ¦ &nbsp; â§</div>
+      <p class="w-waiting">Az elÅ‘adÃ¡s hamarosan kezdÅ‘dik&hellip;</p>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════
-       JELENET 2: ELŐADÓ
-  ════════════════════════════════════════════════════════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       JELENET 2: ELÅADÃ“
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div id="scene-performer" class="scene">
 
     <div class="perf-img-side">
       <img id="perf-photo" class="perf-photo" src="" alt=""
            onerror="this.style.display='none'">
-      <div id="perf-mono" class="perf-monogram"></div>
     </div>
 
     <div class="perf-info-side">
       <div class="perf-live-badge">
         <div class="live-dot"></div>
-        Szavazás folyamatban
+        SzavazÃ¡s folyamatban
       </div>
-      <p class="perf-label">Előadó</p>
+      <p class="perf-label">ElÅ‘adÃ³</p>
       <h2 id="perf-name" class="perf-name"></h2>
       <p  id="perf-verse" class="perf-verse"></p>
       <hr class="perf-divider">
-      <p class="perf-count-label">Összpontszám</p>
+      <p class="perf-count-label">Ã–sszpontszÃ¡m</p>
       <div id="perf-count" class="perf-count">0</div>
-      <p id="perf-votes-sub" class="perf-count-sub">0 szavazó</p>
+      <p id="perf-votes-sub" class="perf-count-sub">0 szavazÃ³</p>
 
       <div class="score-bar-outer" style="position:relative">
         <div id="vote-fx" class="vote-fx"></div>
@@ -584,21 +567,21 @@
 
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════
-       JELENET 3: VÉGEREDMÉNY
-  ════════════════════════════════════════════════════════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       JELENET 3: VÃ‰GEREDMÃ‰NY
+  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
   <div id="scene-results" class="scene">
 
     <div class="results-masthead">
-      <div class="results-masthead-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</div>
+      <div class="results-masthead-eyebrow">I. Ã‰VFOLYAM Â· 1908 JANUÃR 1. Â· I. SZÃM</div>
       <div class="results-masthead-title">NYUGAT</div>
-      <div class="results-masthead-sub">A „Figyelő" új folyama &mdash; Főszerkesztő: Ignotus</div>
+      <div class="results-masthead-sub">A â€žFigyelÅ‘" Ãºj folyama &mdash; FÅ‘szerkesztÅ‘: Ignotus</div>
     </div>
 
     <div class="results-body">
       <div class="results-headline">
-        <div class="results-headline-top">— Végeredmény —</div>
-        <div class="results-headline-main">A szerkesztőség ítélete</div>
+        <div class="results-headline-top">â€” VÃ©geredmÃ©ny â€”</div>
+        <div class="results-headline-main">A szerkesztÅ‘sÃ©g Ã­tÃ©lete</div>
       </div>
       <div id="results-list"></div>
     </div>
@@ -609,23 +592,20 @@
   <script>
     const socket = io();
 
-    // ── Képek ──────────────────────────────────────────────────────
-    // Tedd a képeket a public/images/ mappába ezekkel a nevekkel:
+    // â”€â”€ KÃ©pek â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // Tedd a kÃ©peket a public/images/ mappÃ¡ba ezekkel a nevekkel:
     const poetImages = {
       'Ady Endre':         '/images/ady-endre.jpg',
-      'Babits Mihály':     '/images/babits-mihaly.jpg',
-      'Kosztolányi Dezső': '/images/kosztolanyi-dezso.jpg',
-      'Móricz Zsigmond':   '/images/moricz-zsigmond.jpg',
+      'Babits MihÃ¡ly':     '/images/babits-mihaly.jpg',
+      'KosztolÃ¡nyi DezsÅ‘': '/images/kosztolanyi-dezso.jpg',
+      'MÃ³ricz Zsigmond':   '/images/moricz-zsigmond.jpg',
       'Karinthy Frigyes':  '/images/karinthy-frigyes.jpg',
     };
 
-    function initials(name) {
-      return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    }
 
-    // ── Jelenet-váltás ─────────────────────────────────────────────
+    // â”€â”€ Jelenet-vÃ¡ltÃ¡s â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     let currentScene  = 'waiting';
-    let totalVoters   = 0;  // regisztrált játékosok száma
+    let totalVoters   = 0;  // regisztrÃ¡lt jÃ¡tÃ©kosok szÃ¡ma
 
     function switchScene(id) {
       if (currentScene === id) return;
@@ -634,23 +614,21 @@
       currentScene = id;
     }
 
-    // ── Előadó jelenet ─────────────────────────────────────────────
+    // â”€â”€ ElÅ‘adÃ³ jelenet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function showPerformer(poet, totalScore, voteCount) {
       document.getElementById('perf-name').textContent  = poet.name;
       document.getElementById('perf-verse').textContent = poet.verse;
       document.getElementById('perf-count').textContent = totalScore || 0;
       const sub = document.getElementById('perf-votes-sub');
-      if (sub) sub.textContent = (voteCount || 0) + ' szavazó';
+      if (sub) sub.textContent = (voteCount || 0) + ' szavazÃ³';
       updateBar(totalScore || 0);
-      document.getElementById('perf-mono').textContent  = initials(poet.name);
-
       const photo = document.getElementById('perf-photo');
       photo.style.display = '';
       photo.src = poetImages[poet.name] || '';
       switchScene('performer');
     }
 
-    // ── Szavazat bump + sáv frissítés ────────────────────────────
+    // â”€â”€ Szavazat bump + sÃ¡v frissÃ­tÃ©s â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function bumpCount(totalScore) {
       const el = document.getElementById('perf-count');
       el.textContent = totalScore;
@@ -662,7 +640,7 @@
     }
 
     function updateBar(totalScore) {
-      const max   = totalVoters * 2;  // minden játékos max 2 pontot adhat
+      const max   = totalVoters * 2;  // minden jÃ¡tÃ©kos max 2 pontot adhat
       const pct   = max > 0 ? (totalScore / max) * 100 : 0;
       const fill  = document.getElementById('perf-bar-fill');
       const pctEl = document.getElementById('perf-bar-pct');
@@ -674,7 +652,7 @@
       if (maxEl) maxEl.textContent = 'max ' + max + ' pont';
     }
 
-    // ── Végeredmény jelenet ────────────────────────────────────────
+    // â”€â”€ VÃ©geredmÃ©ny jelenet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function showResults(scores) {
       const sorted   = [...scores].sort((a, b) => b.totalScore - a.totalScore);
       const maxScore = sorted[0]?.totalScore || 1;
@@ -683,13 +661,12 @@
         const pct      = (p.totalScore / maxScore) * 100;
         const rankCls  = ['rank-1','rank-2','rank-3'][i] || 'rank-other';
         const imgSrc   = poetImages[p.name] || '';
-        const mono     = initials(p.name);
         return `
           <div class="result-row" id="rr-${p.id}" data-pct="${pct}">
             <div class="result-rank ${rankCls}">${i + 1}.</div>
             <div class="result-thumb-wrap">
               <img class="result-thumb" src="${imgSrc}" alt="${p.name}"
-                   onerror="this.outerHTML='<div class=\\'result-thumb-mono\\'>${mono}</div>'">
+                   onerror="this.style.display='none'">
             </div>
             <div class="result-info">
               <div class="result-name">${p.name}</div>
@@ -701,7 +678,7 @@
             <div class="result-score">
               <div class="result-score-total">${p.totalScore}</div>
               <div class="result-score-meta">${p.voteCount} szavazat</div>
-              <div class="result-score-meta">⌀ ${p.average}</div>
+              <div class="result-score-meta">âŒ€ ${p.average}</div>
             </div>
           </div>
         `;
@@ -709,7 +686,7 @@
 
       switchScene('results');
 
-      // Lépcsőzetes megjelenés (utolsótól az elsőig — mint egy show)
+      // LÃ©pcsÅ‘zetes megjelenÃ©s (utolsÃ³tÃ³l az elsÅ‘ig â€” mint egy show)
       const reveOrder = [...sorted].reverse();
       reveOrder.forEach((p, i) => {
         setTimeout(() => {
@@ -724,7 +701,7 @@
       });
     }
 
-    // ── Állapot alkalmazása ────────────────────────────────────────
+    // â”€â”€ Ãllapot alkalmazÃ¡sa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     function applyState(s) {
       if (s.phase === 'finished') {
         showResults(s.scores);
@@ -736,7 +713,7 @@
       }
     }
 
-    // ── Socket events ──────────────────────────────────────────────
+    // â”€â”€ Socket events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     socket.on('state', s => {
       if (s.voterCount !== undefined) totalVoters = s.voterCount;
       applyState(s);
@@ -752,15 +729,15 @@
       const fx = document.getElementById('vote-fx');
       if (!fx) return;
       const map = {
-        0: { icon: '✕', color: 'var(--red)' },
-        1: { icon: '❤', color: '#c0392b' },
-        2: { icon: '★', color: 'var(--gold)' },
+        0: { icon: 'âœ•', color: 'var(--red)' },
+        1: { icon: 'â¤', color: '#c0392b' },
+        2: { icon: 'â˜…', color: 'var(--gold)' },
       };
       const { icon, color } = map[rating] ?? map[1];
       const anims  = ['vf1','vf2','vf3','vf4','vf5'];
       const anim   = anims[Math.floor(Math.random() * anims.length)];
-      const dur    = (1.2 + Math.random() * 0.7).toFixed(2);   // 1.2–1.9s
-      const size   = (1.6 + Math.random() * 0.8).toFixed(2);   // 1.6–2.4rem
+      const dur    = (1.2 + Math.random() * 0.7).toFixed(2);   // 1.2â€“1.9s
+      const size   = (1.6 + Math.random() * 0.8).toFixed(2);   // 1.6â€“2.4rem
       const el = document.createElement('span');
       el.className = 'vote-pop';
       el.textContent = icon;
@@ -782,7 +759,7 @@
         updateBar(active.totalScore);
       }
       const sub = document.getElementById('perf-votes-sub');
-      if (sub) sub.textContent = active.voteCount + ' szavazó';
+      if (sub) sub.textContent = active.voteCount + ' szavazÃ³';
     });
 
     socket.on('phase-change', () => socket.emit('request-state'));
@@ -790,3 +767,4 @@
   </script>
 </body>
 </html>
+
