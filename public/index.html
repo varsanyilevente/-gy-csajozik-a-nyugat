@@ -6,11 +6,13 @@
   <title>Nyugat — Szavazás</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    html { height: 100%; }
+    /* position:fixed + inset:0 a legmegbízhatóbb mobil layout —
+       nem függ a vh/dvh támogatástól, mindig a látható területet tölti ki */
+    html, body { height: 100%; margin: 0; }
 
     body {
-      height: 100%;
-      height: 100dvh; /* dynamic viewport — kizárja a böngésző chrome-ját mobilon */
+      position: fixed;
+      inset: 0;
       overflow: hidden;
       touch-action: none;
       display: flex;
@@ -19,16 +21,16 @@
 
     .voter-page .masthead {
       flex-shrink: 0;
-      padding: 0.3rem 1rem 0.25rem;
+      padding: 0.25rem 1rem 0.2rem;
     }
 
-    .voter-page .masthead-title  { font-size: clamp(1.6rem, 8vw, 2.5rem); }
+    .voter-page .masthead-title    { font-size: clamp(1.5rem, 7vw, 2.2rem); }
     .voter-page .masthead-eyebrow,
-    .voter-page .masthead-sub   { font-size: 0.55rem; }
+    .voter-page .masthead-sub      { font-size: 0.52rem; }
 
     main {
       flex: 1;
-      min-height: 0; /* nélküle a flex gyerek nem tud összemenni */
+      min-height: 0;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -39,7 +41,7 @@
       display: none;
       flex-direction: column;
       flex: 1;
-      min-height: 0; /* kötelező a flex lánc végén */
+      min-height: 0;
       overflow: hidden;
     }
     .screen.active { display: flex; }

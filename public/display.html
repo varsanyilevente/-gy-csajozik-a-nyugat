@@ -245,6 +245,66 @@
       font-size: 0.9rem;
       color: var(--ink-light);
       margin-top: 0.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Töltősáv */
+    .score-bar-outer {
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .score-bar-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 0.4rem;
+    }
+
+    .score-bar-track {
+      width: 100%;
+      height: 18px;
+      background: var(--paper-dark);
+      border: 1.5px solid var(--ink-mid);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--ink);
+      transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                  background 0.3s ease;
+      position: relative;
+    }
+
+    .score-bar-fill.high { background: var(--gold); }
+
+    /* Belső animált csík */
+    .score-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 30px; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.25));
+      animation: shimmer 1.5s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 0; }
+      50%       { opacity: 1; }
+    }
+
+    .score-bar-pct {
+      text-align: right;
+      font-size: 0.7rem;
+      color: var(--ink-light);
+      margin-top: 0.3rem;
+      font-style: italic;
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -452,6 +512,18 @@
       <p class="perf-count-label">Összpontszám</p>
       <div id="perf-count" class="perf-count">0</div>
       <p id="perf-votes-sub" class="perf-count-sub">0 szavazó</p>
+
+      <div class="score-bar-outer">
+        <div class="score-bar-label-row">
+          <span>0 pont</span>
+          <span id="perf-bar-max">max</span>
+        </div>
+        <div class="score-bar-track">
+          <div id="perf-bar-fill" class="score-bar-fill"></div>
+        </div>
+        <div id="perf-bar-pct" class="score-bar-pct">0%</div>
+      </div>
+
     </div>
 
   </div>
@@ -512,6 +584,7 @@
       document.getElementById('perf-count').textContent = totalScore || 0;
       const sub = document.getElementById('perf-votes-sub');
       if (sub) sub.textContent = (voteCount || 0) + ' szavazó';
+      updateBar(totalScore || 0, voteCount || 0);
       document.getElementById('perf-mono').textContent  = initials(poet.name);
 
       const photo = document.getElementById('perf-photo');
@@ -520,14 +593,28 @@
       switchScene('performer');
     }
 
-    // ── Szavazat bump animáció ─────────────────────────────────────
-    function bumpCount(val) {
+    // ── Szavazat bump + sáv frissítés ────────────────────────────
+    function bumpCount(totalScore, voteCount) {
       const el = document.getElementById('perf-count');
-      el.textContent = val;
+      el.textContent = totalScore;
       el.classList.remove('bump');
       void el.offsetWidth;
       el.classList.add('bump');
-      setTimeout(() => el.classList.remove('bump'), 250);
+      setTimeout(() => el.classList.remove('bump'), 300);
+      updateBar(totalScore, voteCount);
+    }
+
+    function updateBar(totalScore, voteCount) {
+      const max    = voteCount * 2;
+      const pct    = max > 0 ? Math.round((totalScore / max) * 100) : 0;
+      const fill   = document.getElementById('perf-bar-fill');
+      const pctEl  = document.getElementById('perf-bar-pct');
+      const maxEl  = document.getElementById('perf-bar-max');
+      if (!fill) return;
+      fill.style.width = pct + '%';
+      fill.classList.toggle('high', pct >= 60);
+      if (pctEl)  pctEl.textContent  = pct + '% hatékonyság';
+      if (maxEl)  maxEl.textContent  = 'max ' + max + ' pont';
     }
 
     // ── Végeredmény jelenet ────────────────────────────────────────
@@ -598,11 +685,11 @@
     socket.on('scores-update', scores => {
       const active = scores.find(s => s.isActive);
       if (!active) return;
-      // Mindig frissítjük — ha a performer scene aktív, bumppel animálunk
       if (currentScene === 'performer') {
-        bumpCount(active.totalScore);
+        bumpCount(active.totalScore, active.voteCount);
       } else {
         document.getElementById('perf-count').textContent = active.totalScore;
+        updateBar(active.totalScore, active.voteCount);
       }
       const sub = document.getElementById('perf-votes-sub');
       if (sub) sub.textContent = active.voteCount + ' szavazó';
