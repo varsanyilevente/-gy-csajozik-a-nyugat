@@ -162,19 +162,6 @@
       pointer-events: none;
     }
 
-    .card-mono {
-      position: absolute;
-      inset: 0;
-      display: none;        /* CSS-szinten is rejtett — JS csak error esetén állítja flex-re */
-      align-items: center;
-      justify-content: center;
-      font-family: 'Playfair Display', serif;
-      font-size: 7rem;
-      font-weight: 900;
-      color: rgba(255,255,255,0.6);
-      background: var(--ink);
-      pointer-events: none;
-    }
 
     /* Swipe stamps */
     .swipe-stamp {
@@ -334,7 +321,6 @@
       <div class="card-wrap">
         <div id="tinder-card" class="tinder-card">
 
-          <div id="card-mono" class="card-mono"></div>
           <img id="card-photo" class="card-photo" src="" alt="">
           <div class="card-gradient"></div>
 
@@ -409,9 +395,6 @@
       'Karinthy Frigyes':  '/images/karinthy-frigyes.jpg',
     };
 
-    function initials(name) {
-      return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    }
 
     // ── Screens ────────────────────────────────────────────────────
     function show(id) {
@@ -429,17 +412,9 @@
       document.getElementById('card-age').textContent      = poet.age + ' éves';
       document.getElementById('card-distance').textContent = poet.distance + '-re van tőled';
       document.getElementById('card-verse').textContent    = '„' + poet.verse + '"';
-      const mono  = document.getElementById('card-mono');
       const photo = document.getElementById('card-photo');
-      mono.textContent = initials(poet.name);
-      // A fotó z-index:1 révén fizikailag takarja a monogramot —
-      // csak akkor kell a monogramot előhozni ha a fotó sikertelen.
       photo.style.display = '';
-      photo.style.zIndex  = '1';
-      photo.onload  = () => {};
-      photo.onerror = () => { photo.style.display = 'none'; };
       photo.src = poetImages[poet.name] || '';
-      if (photo.complete && photo.naturalWidth === 0) photo.style.display = 'none';
 
       const card = document.getElementById('tinder-card');
       card.classList.remove('snapping','flying');
