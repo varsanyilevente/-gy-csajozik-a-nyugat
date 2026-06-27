@@ -11,11 +11,11 @@ const ADMIN_PASSWORD = 'nyugat1908';
 
 const state = {
   poets: [
-    { id: 0, name: 'Ady Endre',         verse: 'Vér és arany'                },
-    { id: 1, name: 'Babits Mihály',      verse: 'Levelek Iris koszorújából'   },
-    { id: 2, name: 'Kosztolányi Dezső',  verse: 'Négy fal között'             },
-    { id: 3, name: 'Móricz Zsigmond',    verse: 'Sárarany'                    },
-    { id: 4, name: 'Karinthy Frigyes',   verse: 'Így írtok ti'                },
+    { id: 0, name: 'Ady Endre',         verse: 'Vér és arany',               age: 31, distance: '2 km'  },
+    { id: 1, name: 'Babits Mihály',      verse: 'Levelek Iris koszorújából',  age: 25, distance: '8 km'  },
+    { id: 2, name: 'Kosztolányi Dezső',  verse: 'Négy fal között',            age: 23, distance: '3 km'  },
+    { id: 3, name: 'Móricz Zsigmond',    verse: 'Sárarany',                   age: 29, distance: '12 km' },
+    { id: 4, name: 'Karinthy Frigyes',   verse: 'Így írtok ti',               age: 21, distance: '5 km'  },
   ],
   scores: [],          // initialized below
   currentPoetIndex: -1,
@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
     const voter = state.voters.get(name);
     if (!voter || voter.hasVoted) return;
     if (state.phase !== 'voting') return;
-    if (!Number.isInteger(rating) || rating < 1 || rating > 4) return;
+    if (!Number.isInteger(rating) || rating < 0 || rating > 2) return;
 
     voter.hasVoted = true;
 
@@ -124,7 +124,7 @@ function buildClientState(socketId) {
   return {
     phase:            state.phase,
     currentPoetIndex: idx,
-    currentPoet:      idx >= 0 ? { name: state.poets[idx].name, verse: state.poets[idx].verse } : null,
+    currentPoet:      idx >= 0 ? { name: state.poets[idx].name, verse: state.poets[idx].verse, age: state.poets[idx].age, distance: state.poets[idx].distance } : null,
     scores:           buildScores(),
     hasVoted:         voter ? voter.hasVoted : false,
     voterName:        name || null,

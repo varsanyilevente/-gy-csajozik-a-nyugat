@@ -2,90 +2,359 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Nyugat — Szavazás</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .voter-page main { padding-top: 1.25rem; }
-    #screen-name form { margin-top: 1.25rem; }
-    #screen-name .screen-text { margin-bottom: 1.25rem; }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .voter-page .masthead { flex-shrink: 0; }
+    .voter-page .masthead-title { font-size: clamp(2rem, 10vw, 3.5rem); }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Screen system ───────────────────────────────────────────── */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+    .screen.active { display: flex; }
+
+    /* ── Non-voting screens ──────────────────────────────────────── */
+    .info-screen {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .screen-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .screen-text {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--ink-mid);
+      margin-bottom: 0.5rem;
+    }
+
+    .screen-text.muted { color: var(--ink-light); font-style: italic; }
+
+    .voter-greeting {
+      font-style: italic;
+      color: var(--ink-mid);
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    #name-form { width: 100%; max-width: 360px; margin-top: 1rem; }
+
+    .loading-dots { font-size: 1.5rem; color: var(--ink-light); margin-top: 1rem; }
+
+    .voted-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 0.5rem; }
+    .voted-icon.nope  { color: #F44336; }
+    .voted-icon.like  { color: #4CAF50; }
+    .voted-icon.super { color: #2196F3; }
+
+    /* ── TINDER CARD SCREEN ──────────────────────────────────────── */
+    #screen-voting {
+      padding: 0.75rem;
+      gap: 0.75rem;
+    }
+
+    .card-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      border-radius: 14px;
+    }
+
+    .tinder-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--ink);
+      cursor: grab;
+      will-change: transform;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    }
+
+    .tinder-card.snapping {
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .tinder-card.flying {
+      transition: transform 0.4s ease-in, opacity 0.4s ease-in;
+    }
+
+    .card-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      pointer-events: none;
+      display: block;
+    }
+
+    .card-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.88) 0%,
+        rgba(0,0,0,0.25) 45%,
+        transparent      70%
+      );
+      pointer-events: none;
+    }
+
+    .card-mono {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 7rem;
+      font-weight: 900;
+      color: white;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    /* Swipe stamps */
+    .swipe-stamp {
+      position: absolute;
+      padding: 6px 14px;
+      border: 4px solid;
+      border-radius: 6px;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .stamp-like {
+      top: 28px; right: 20px;
+      color: #4CAF50; border-color: #4CAF50;
+      transform: rotate(-12deg);
+    }
+
+    .stamp-nope {
+      top: 28px; left: 20px;
+      color: #F44336; border-color: #F44336;
+      transform: rotate(12deg);
+    }
+
+    .stamp-super {
+      bottom: 110px; left: 50%;
+      transform: translateX(-50%) rotate(-4deg);
+      color: #2196F3; border-color: #2196F3;
+      font-size: 1.5rem; white-space: nowrap;
+    }
+
+    /* Card info */
+    .card-info {
+      position: absolute;
+      bottom: 18px; left: 18px; right: 18px;
+      pointer-events: none;
+    }
+
+    .card-name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 6vw, 2.2rem);
+      font-weight: 700;
+      color: white;
+      line-height: 1;
+    }
+
+    .card-age {
+      font-size: clamp(1.1rem, 4vw, 1.5rem);
+      color: rgba(255,255,255,0.9);
+    }
+
+    .card-distance {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      margin-top: 3px;
+      font-style: italic;
+    }
+
+    .card-verse {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.55);
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    /* Action buttons */
+    .action-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.4rem 0 0.2rem;
+      flex-shrink: 0;
+    }
+
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .action-btn {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      border: 2.5px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: var(--paper);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      user-select: none;
+    }
+
+    .action-btn:active { transform: scale(0.88); box-shadow: none; }
+
+    .btn-nope  { border-color: #F44336; color: #F44336; }
+    .btn-like  { border-color: #4CAF50; color: #4CAF50; width: 66px; height: 66px; font-size: 1.75rem; }
+    .btn-super { border-color: #2196F3; color: #2196F3; }
+
+    .btn-hint {
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-top: 0.25rem;
+    }
   </style>
 </head>
 <body class="voter-page">
 
   <header class="masthead">
-    <div class="masthead-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</div>
+    <div class="masthead-eyebrow">I. ÉVFOLYAM · 1908 · I. SZÁM</div>
     <h1 class="masthead-title">NYUGAT</h1>
-    <div class="masthead-sub">A „Figyelő" új folyama &mdash; Főszerkesztő: Ignotus</div>
+    <div class="masthead-sub">A „Figyelő" új folyama</div>
   </header>
 
   <main>
 
     <!-- ── Névbeírás ─────────────────────────────────────────────── -->
-    <div id="screen-name" class="screen active">
+    <div id="screen-name" class="screen info-screen active">
       <div class="ornament">❧</div>
       <h2 class="screen-title">Üdvözöljük!</h2>
-      <p class="screen-text">Adja meg nevét, s részt vehet<br>a szerkesztőség szavazásán.</p>
+      <p class="screen-text">Adja meg nevét a szavazáshoz.</p>
       <form id="name-form">
-        <input type="text" id="name-input" placeholder="Az Ön neve..." maxlength="50" autocomplete="off" autocorrect="off">
-        <button type="submit" class="btn-primary">Belépés a Szerkesztőségbe</button>
+        <input type="text" id="name-input" placeholder="Az Ön neve…" maxlength="50" autocomplete="off" autocorrect="off">
+        <button type="submit" class="btn-primary">Belépés</button>
       </form>
     </div>
 
     <!-- ── Várakozás ─────────────────────────────────────────────── -->
-    <div id="screen-waiting" class="screen">
+    <div id="screen-waiting" class="screen info-screen">
       <p class="voter-greeting">Üdvözöljük, <em id="w-name"></em>!</p>
       <div class="ornament">❧</div>
       <h2 class="screen-title">Várakozás</h2>
-      <p class="screen-text">A következő előadás<br>hamarosan kezdődik…</p>
+      <p class="screen-text">A következő előadás hamarosan kezdődik…</p>
       <div class="loading-dots">· · ·</div>
     </div>
 
-    <!-- ── Szavazás ──────────────────────────────────────────────── -->
+    <!-- ── TINDER SZAVAZÁS ───────────────────────────────────────── -->
     <div id="screen-voting" class="screen">
-      <p class="voter-greeting">Ön szavaz, <em id="v-name"></em></p>
-      <div class="ornament">❧</div>
-      <h2 id="v-poet" class="poet-name"></h2>
-      <p  id="v-verse" class="verse-title"></p>
-      <hr class="rule">
-      <p class="vote-instruction">Mennyire tetszett az előadás?</p>
-      <div class="rating-grid">
-        <button class="rating-btn" data-rating="1">
-          <span class="rating-number">1</span>
-          <span class="rating-label">Gyenge</span>
-        </button>
-        <button class="rating-btn" data-rating="2">
-          <span class="rating-number">2</span>
-          <span class="rating-label">Közepes</span>
-        </button>
-        <button class="rating-btn" data-rating="3">
-          <span class="rating-number">3</span>
-          <span class="rating-label">Jó</span>
-        </button>
-        <button class="rating-btn" data-rating="4">
-          <span class="rating-number">4</span>
-          <span class="rating-label">Kiváló</span>
-        </button>
+
+      <div class="card-wrap">
+        <div id="tinder-card" class="tinder-card">
+
+          <img id="card-photo" class="card-photo" src="" alt=""
+               onerror="this.style.display='none'">
+          <div id="card-mono" class="card-mono"></div>
+          <div class="card-gradient"></div>
+
+          <div id="stamp-like"  class="swipe-stamp stamp-like">LIKE ❤</div>
+          <div id="stamp-nope"  class="swipe-stamp stamp-nope">NOPE ✕</div>
+          <div id="stamp-super" class="swipe-stamp stamp-super">★ SUPER LIKE</div>
+
+          <div class="card-info">
+            <div class="card-name-row">
+              <span id="card-name" class="card-name"></span>
+              <span id="card-age"  class="card-age"></span>
+            </div>
+            <div id="card-distance" class="card-distance"></div>
+            <div id="card-verse"    class="card-verse"></div>
+          </div>
+
+        </div>
       </div>
+
+      <div class="action-row">
+        <div class="action-item">
+          <button class="action-btn btn-nope"  id="btn-nope">✕</button>
+          <div class="btn-hint">0 pont</div>
+        </div>
+        <div class="action-item">
+          <button class="action-btn btn-super" id="btn-super">★</button>
+          <div class="btn-hint">2 pont</div>
+        </div>
+        <div class="action-item">
+          <button class="action-btn btn-like"  id="btn-like">❤</button>
+          <div class="btn-hint">1 pont</div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ── Szavazat leadva ────────────────────────────────────────── -->
-    <div id="screen-voted" class="screen">
-      <div class="vote-confirmed">
-        <div class="ornament large">✦</div>
-        <h2 class="screen-title">Szavazat leadva!</h2>
-        <p id="voted-text" class="screen-text"></p>
-        <hr class="rule">
-        <p class="screen-text muted">Várakozás a következő előadóra…</p>
-      </div>
+    <div id="screen-voted" class="screen info-screen">
+      <div id="voted-icon" class="voted-icon"></div>
+      <h2 class="screen-title">Szavazat leadva!</h2>
+      <p id="voted-label" class="screen-text"></p>
+      <hr class="rule">
+      <p class="screen-text muted">Várakozás a következő előadóra…</p>
     </div>
 
     <!-- ── Vége ──────────────────────────────────────────────────── -->
-    <div id="screen-finished" class="screen">
+    <div id="screen-finished" class="screen info-screen">
       <div class="ornament large">❧</div>
       <h2 class="screen-title">A verseny véget ért</h2>
       <hr class="rule-double">
-      <p class="screen-text">Köszönjük a részvételt!<br>A <em>Nyugat</em> szerkesztősége nevében.</p>
+      <p class="screen-text">Köszönjük a részvételt!<br><em>A Nyugat szerkesztősége nevében.</em></p>
     </div>
 
   </main>
@@ -95,97 +364,191 @@
     const socket = io();
 
     let voterName = null;
-    let currentPhase = 'waiting';
+    let hasVoted  = false;
+    let isDragging = false;
+    let startX = 0, startY = 0, curX = 0, curY = 0;
 
-    // ── DOM refs ──────────────────────────────────────────────────
-    const screens = {
-      name:     document.getElementById('screen-name'),
-      waiting:  document.getElementById('screen-waiting'),
-      voting:   document.getElementById('screen-voting'),
-      voted:    document.getElementById('screen-voted'),
-      finished: document.getElementById('screen-finished'),
+    const THRESHOLD = 75;
+
+    const poetImages = {
+      'Ady Endre':         '/images/ady-endre.jpg',
+      'Babits Mihály':     '/images/babits-mihaly.jpg',
+      'Kosztolányi Dezső': '/images/kosztolanyi-dezso.jpg',
+      'Móricz Zsigmond':   '/images/moricz-zsigmond.jpg',
+      'Karinthy Frigyes':  '/images/karinthy-frigyes.jpg',
     };
 
-    function show(id) {
-      Object.values(screens).forEach(s => s.classList.remove('active'));
-      screens[id].classList.add('active');
+    function initials(name) {
+      return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
     }
 
-    // ── Name form ─────────────────────────────────────────────────
+    // ── Screens ────────────────────────────────────────────────────
+    function show(id) {
+      ['name','waiting','voting','voted','finished'].forEach(s =>
+        document.getElementById('screen-' + s).classList.remove('active')
+      );
+      document.getElementById('screen-' + id).classList.add('active');
+    }
+
+    // ── Card populate ──────────────────────────────────────────────
+    function populateCard(poet) {
+      document.getElementById('card-name').textContent     = poet.name;
+      document.getElementById('card-age').textContent      = poet.age + ' éves';
+      document.getElementById('card-distance').textContent = poet.distance + '-re van tőled';
+      document.getElementById('card-verse').textContent    = '„' + poet.verse + '"';
+      document.getElementById('card-mono').textContent     = initials(poet.name);
+
+      const photo = document.getElementById('card-photo');
+      photo.style.display = '';
+      photo.src = poetImages[poet.name] || '';
+
+      const card = document.getElementById('tinder-card');
+      card.classList.remove('snapping','flying');
+      card.style.transform = '';
+      card.style.opacity   = '1';
+      hasVoted = false;
+      hideStamps();
+    }
+
+    // ── Stamps ─────────────────────────────────────────────────────
+    function hideStamps() {
+      ['stamp-like','stamp-nope','stamp-super'].forEach(id =>
+        document.getElementById(id).style.opacity = '0'
+      );
+    }
+
+    function showStamp(id, opacity) {
+      hideStamps();
+      document.getElementById(id).style.opacity = String(Math.min(1, opacity));
+    }
+
+    // ── Drag ───────────────────────────────────────────────────────
+    function getPos(e) {
+      return e.touches
+        ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        : { x: e.clientX,            y: e.clientY };
+    }
+
+    const card = document.getElementById('tinder-card');
+
+    card.addEventListener('touchstart', onStart, { passive: true });
+    card.addEventListener('mousedown',  onStart);
+
+    function onStart(e) {
+      if (hasVoted) return;
+      const p = getPos(e);
+      startX = curX = p.x;
+      startY = curY = p.y;
+      isDragging = true;
+      card.classList.remove('snapping','flying');
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('mousemove',  onMove);
+      document.addEventListener('touchend',   onEnd);
+      document.addEventListener('mouseup',    onEnd);
+    }
+
+    function onMove(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      const p = getPos(e);
+      curX = p.x; curY = p.y;
+      const dx = curX - startX;
+      const dy = curY - startY;
+      card.style.transform = `translate(${dx}px,${dy}px) rotate(${dx * 0.07}deg)`;
+
+      if (Math.abs(dx) >= Math.abs(dy)) {
+        if (dx  >  20) showStamp('stamp-like',  (dx  - 20) / 60);
+        else if (dx < -20) showStamp('stamp-nope', (-dx - 20) / 60);
+        else hideStamps();
+      } else {
+        if (dy < -20) showStamp('stamp-super', (-dy - 20) / 60);
+        else hideStamps();
+      }
+    }
+
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('mousemove',  onMove);
+      document.removeEventListener('touchend',   onEnd);
+      document.removeEventListener('mouseup',    onEnd);
+
+      hideStamps();
+
+      const dx = curX - startX;
+      const dy = curY - startY;
+      const horizDom = Math.abs(dx) >= Math.abs(dy);
+
+      if      (horizDom  && dx  >  THRESHOLD) { flyOff('right'); castVote(1); }
+      else if (horizDom  && dx  < -THRESHOLD) { flyOff('left');  castVote(0); }
+      else if (!horizDom && dy  < -THRESHOLD) { flyOff('up');    castVote(2); }
+      else {
+        card.classList.add('snapping');
+        card.style.transform = '';
+        setTimeout(() => card.classList.remove('snapping'), 350);
+      }
+    }
+
+    function flyOff(dir) {
+      const W = window.innerWidth, H = window.innerHeight;
+      card.classList.add('flying');
+      if      (dir === 'right') card.style.transform = `translate(${W*1.6}px,0) rotate(30deg)`;
+      else if (dir === 'left')  card.style.transform = `translate(-${W*1.6}px,0) rotate(-30deg)`;
+      else                      card.style.transform = `translate(0,-${H*1.5}px)`;
+      card.style.opacity = '0';
+    }
+
+    // ── Vote ───────────────────────────────────────────────────────
+    function castVote(rating) {
+      if (hasVoted) return;
+      hasVoted = true;
+      socket.emit('vote', { rating });
+
+      const icons   = { 0: '✕',  1: '❤',     2: '★'          };
+      const labels  = { 0: 'Pass — 0 pont', 1: 'Like — 1 pont', 2: 'Super Like — 2 pont' };
+      const classes = { 0: 'nope', 1: 'like', 2: 'super'       };
+
+      setTimeout(() => {
+        document.getElementById('voted-icon').textContent = icons[rating];
+        document.getElementById('voted-icon').className  = 'voted-icon ' + classes[rating];
+        document.getElementById('voted-label').textContent = labels[rating];
+        show('voted');
+      }, 380);
+    }
+
+    // ── Buttons ────────────────────────────────────────────────────
+    document.getElementById('btn-nope').addEventListener('click',  () => { if (!hasVoted) { flyOff('left');  castVote(0); } });
+    document.getElementById('btn-like').addEventListener('click',  () => { if (!hasVoted) { flyOff('right'); castVote(1); } });
+    document.getElementById('btn-super').addEventListener('click', () => { if (!hasVoted) { flyOff('up');    castVote(2); } });
+
+    // ── Name form ──────────────────────────────────────────────────
     document.getElementById('name-form').addEventListener('submit', e => {
       e.preventDefault();
       const val = document.getElementById('name-input').value.trim();
-      if (!val) return;
-      socket.emit('register', { name: val });
+      if (val) socket.emit('register', { name: val });
     });
 
-    // ── Rating buttons ─────────────────────────────────────────────
-    document.querySelectorAll('.rating-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const rating = parseInt(btn.dataset.rating);
-        socket.emit('vote', { rating });
-
-        document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-      });
-    });
-
-    // ── Apply server state ─────────────────────────────────────────
+    // ── State ──────────────────────────────────────────────────────
     function applyState(s) {
-      currentPhase = s.phase;
-
-      if (s.voterName) {
-        voterName = s.voterName;
-      }
-
-      if (!voterName) {
-        show('name');
-        return;
-      }
-
+      if (s.voterName) voterName = s.voterName;
+      if (!voterName) { show('name'); return; }
       document.getElementById('w-name').textContent = voterName;
-      document.getElementById('v-name').textContent = voterName;
 
-      if (s.phase === 'finished') {
-        show('finished');
-        return;
-      }
-
+      if (s.phase === 'finished') { show('finished'); return; }
       if (s.phase === 'voting' && s.currentPoet) {
-        if (s.hasVoted) {
-          show('voted');
-        } else {
-          document.getElementById('v-poet').textContent  = s.currentPoet.name;
-          document.getElementById('v-verse').textContent = s.currentPoet.verse;
-          document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
-          show('voting');
-        }
+        if (s.hasVoted) { show('voted'); return; }
+        populateCard(s.currentPoet);
+        show('voting');
       } else {
         show('waiting');
       }
     }
 
-    // ── Socket events ──────────────────────────────────────────────
-    socket.on('state', applyState);
-
-    socket.on('registered', ({ name }) => {
-      voterName = name;
-    });
-
-    socket.on('phase-change', () => {
-      socket.emit('request-state');
-    });
-
-    socket.on('vote-accepted', ({ rating }) => {
-      const labels = { 1: 'Gyenge (1)', 2: 'Közepes (2)', 3: 'Jó (3)', 4: 'Kiváló (4)' };
-      document.getElementById('voted-text').textContent = `Az Ön értékelése: ${labels[rating]}`;
-      show('voted');
-    });
-
-    socket.on('reset', () => {
-      voterName = null;
-      show('name');
-    });
+    socket.on('state',        applyState);
+    socket.on('registered',   ({ name }) => { voterName = name; });
+    socket.on('phase-change', () => socket.emit('request-state'));
+    socket.on('reset',        () => { voterName = null; show('name'); });
   </script>
 </body>
 </html>

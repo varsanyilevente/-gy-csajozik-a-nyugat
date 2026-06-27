@@ -448,9 +448,9 @@
       <h2 id="perf-name" class="perf-name"></h2>
       <p  id="perf-verse" class="perf-verse"></p>
       <hr class="perf-divider">
-      <p class="perf-count-label">Beérkezett szavazat</p>
+      <p class="perf-count-label">Összpontszám</p>
       <div id="perf-count" class="perf-count">0</div>
-      <p class="perf-count-sub">szavazó értékelte</p>
+      <p id="perf-votes-sub" class="perf-count-sub">0 szavazó</p>
     </div>
 
   </div>
@@ -505,10 +505,12 @@
     }
 
     // ── Előadó jelenet ─────────────────────────────────────────────
-    function showPerformer(poet, voteCount) {
+    function showPerformer(poet, totalScore, voteCount) {
       document.getElementById('perf-name').textContent  = poet.name;
       document.getElementById('perf-verse').textContent = poet.verse;
-      document.getElementById('perf-count').textContent = voteCount || 0;
+      document.getElementById('perf-count').textContent = totalScore || 0;
+      const sub = document.getElementById('perf-votes-sub');
+      if (sub) sub.textContent = (voteCount || 0) + ' szavazó';
       document.getElementById('perf-mono').textContent  = initials(poet.name);
 
       const photo = document.getElementById('perf-photo');
@@ -583,7 +585,7 @@
         showResults(s.scores);
       } else if (s.phase === 'voting' && s.currentPoet) {
         const active = (s.scores || []).find(sc => sc.isActive);
-        showPerformer(s.currentPoet, active?.voteCount || 0);
+        showPerformer(s.currentPoet, active?.totalScore || 0, active?.voteCount || 0);
       } else {
         switchScene('waiting');
       }
@@ -595,7 +597,9 @@
     socket.on('scores-update', scores => {
       const active = scores.find(s => s.isActive);
       if (active && currentScene === 'performer') {
-        bumpCount(active.voteCount);
+        bumpCount(active.totalScore);
+        const sub = document.getElementById('perf-votes-sub');
+        if (sub) sub.textContent = active.voteCount + ' szavazó';
       }
     });
 
