@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Nyugat — Szavazás</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .voter-page main { padding-top: 1.25rem; }
+    #screen-name form { margin-top: 1.25rem; }
+    #screen-name .screen-text { margin-bottom: 1.25rem; }
+  </style>
+</head>
+<body class="voter-page">
+
+  <header class="masthead">
+    <div class="masthead-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</div>
+    <h1 class="masthead-title">NYUGAT</h1>
+    <div class="masthead-sub">A „Figyelő" új folyama &mdash; Főszerkesztő: Ignotus</div>
+  </header>
+
+  <main>
+
+    <!-- ── Névbeírás ─────────────────────────────────────────────── -->
+    <div id="screen-name" class="screen active">
+      <div class="ornament">❧</div>
+      <h2 class="screen-title">Üdvözöljük!</h2>
+      <p class="screen-text">Adja meg nevét, s részt vehet<br>a szerkesztőség szavazásán.</p>
+      <form id="name-form">
+        <input type="text" id="name-input" placeholder="Az Ön neve..." maxlength="50" autocomplete="off" autocorrect="off">
+        <button type="submit" class="btn-primary">Belépés a Szerkesztőségbe</button>
+      </form>
+    </div>
+
+    <!-- ── Várakozás ─────────────────────────────────────────────── -->
+    <div id="screen-waiting" class="screen">
+      <p class="voter-greeting">Üdvözöljük, <em id="w-name"></em>!</p>
+      <div class="ornament">❧</div>
+      <h2 class="screen-title">Várakozás</h2>
+      <p class="screen-text">A következő előadás<br>hamarosan kezdődik…</p>
+      <div class="loading-dots">· · ·</div>
+    </div>
+
+    <!-- ── Szavazás ──────────────────────────────────────────────── -->
+    <div id="screen-voting" class="screen">
+      <p class="voter-greeting">Ön szavaz, <em id="v-name"></em></p>
+      <div class="ornament">❧</div>
+      <h2 id="v-poet" class="poet-name"></h2>
+      <p  id="v-verse" class="verse-title"></p>
+      <hr class="rule">
+      <p class="vote-instruction">Mennyire tetszett az előadás?</p>
+      <div class="rating-grid">
+        <button class="rating-btn" data-rating="1">
+          <span class="rating-number">1</span>
+          <span class="rating-label">Gyenge</span>
+        </button>
+        <button class="rating-btn" data-rating="2">
+          <span class="rating-number">2</span>
+          <span class="rating-label">Közepes</span>
+        </button>
+        <button class="rating-btn" data-rating="3">
+          <span class="rating-number">3</span>
+          <span class="rating-label">Jó</span>
+        </button>
+        <button class="rating-btn" data-rating="4">
+          <span class="rating-number">4</span>
+          <span class="rating-label">Kiváló</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Szavazat leadva ────────────────────────────────────────── -->
+    <div id="screen-voted" class="screen">
+      <div class="vote-confirmed">
+        <div class="ornament large">✦</div>
+        <h2 class="screen-title">Szavazat leadva!</h2>
+        <p id="voted-text" class="screen-text"></p>
+        <hr class="rule">
+        <p class="screen-text muted">Várakozás a következő előadóra…</p>
+      </div>
+    </div>
+
+    <!-- ── Vége ──────────────────────────────────────────────────── -->
+    <div id="screen-finished" class="screen">
+      <div class="ornament large">❧</div>
+      <h2 class="screen-title">A verseny véget ért</h2>
+      <hr class="rule-double">
+      <p class="screen-text">Köszönjük a részvételt!<br>A <em>Nyugat</em> szerkesztősége nevében.</p>
+    </div>
+
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    let voterName = null;
+    let currentPhase = 'waiting';
+
+    // ── DOM refs ──────────────────────────────────────────────────
+    const screens = {
+      name:     document.getElementById('screen-name'),
+      waiting:  document.getElementById('screen-waiting'),
+      voting:   document.getElementById('screen-voting'),
+      voted:    document.getElementById('screen-voted'),
+      finished: document.getElementById('screen-finished'),
+    };
+
+    function show(id) {
+      Object.values(screens).forEach(s => s.classList.remove('active'));
+      screens[id].classList.add('active');
+    }
+
+    // ── Name form ─────────────────────────────────────────────────
+    document.getElementById('name-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const val = document.getElementById('name-input').value.trim();
+      if (!val) return;
+      socket.emit('register', { name: val });
+    });
+
+    // ── Rating buttons ─────────────────────────────────────────────
+    document.querySelectorAll('.rating-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const rating = parseInt(btn.dataset.rating);
+        socket.emit('vote', { rating });
+
+        document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+
+    // ── Apply server state ─────────────────────────────────────────
+    function applyState(s) {
+      currentPhase = s.phase;
+
+      if (s.voterName) {
+        voterName = s.voterName;
+      }
+
+      if (!voterName) {
+        show('name');
+        return;
+      }
+
+      document.getElementById('w-name').textContent = voterName;
+      document.getElementById('v-name').textContent = voterName;
+
+      if (s.phase === 'finished') {
+        show('finished');
+        return;
+      }
+
+      if (s.phase === 'voting' && s.currentPoet) {
+        if (s.hasVoted) {
+          show('voted');
+        } else {
+          document.getElementById('v-poet').textContent  = s.currentPoet.name;
+          document.getElementById('v-verse').textContent = s.currentPoet.verse;
+          document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+          show('voting');
+        }
+      } else {
+        show('waiting');
+      }
+    }
+
+    // ── Socket events ──────────────────────────────────────────────
+    socket.on('state', applyState);
+
+    socket.on('registered', ({ name }) => {
+      voterName = name;
+    });
+
+    socket.on('phase-change', () => {
+      socket.emit('request-state');
+    });
+
+    socket.on('vote-accepted', ({ rating }) => {
+      const labels = { 1: 'Gyenge (1)', 2: 'Közepes (2)', 3: 'Jó (3)', 4: 'Kiváló (4)' };
+      document.getElementById('voted-text').textContent = `Az Ön értékelése: ${labels[rating]}`;
+      show('voted');
+    });
+
+    socket.on('reset', () => {
+      voterName = null;
+      show('name');
+    });
+  </script>
+</body>
+</html>

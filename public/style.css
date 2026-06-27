@@ -1,0 +1,510 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IM+Fell+English:ital@0;1&display=swap');
+
+/* ─── Variables ─────────────────────────────────────────────────────────────── */
+:root {
+  --paper:      #F0E6CA;
+  --paper-dark: #E2D4AC;
+  --ink:        #1A0A00;
+  --ink-mid:    #3D2010;
+  --ink-light:  #6B4226;
+  --red:        #7A1F1F;
+  --border:     #2C1505;
+  --gold:       #A0722A;
+}
+
+/* ─── Reset & Base ───────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: 'IM Fell English', Georgia, 'Times New Roman', serif;
+  min-height: 100vh;
+}
+
+/* ─── Masthead ───────────────────────────────────────────────────────────────── */
+.masthead {
+  text-align: center;
+  border-bottom: 4px double var(--border);
+  padding: 1rem 1.5rem 0.75rem;
+  background: var(--paper);
+}
+
+.masthead-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 0.25rem;
+}
+
+.masthead-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 12vw, 6rem);
+  letter-spacing: 0.25em;
+  line-height: 1;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.masthead-sub {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-top: 0.2rem;
+}
+
+/* ─── Ornament ───────────────────────────────────────────────────────────────── */
+.ornament {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1.5rem;
+  margin: 0.75rem 0;
+  line-height: 1;
+}
+
+.ornament.large { font-size: 2.5rem; margin: 1.5rem 0; }
+
+.rule {
+  border: none;
+  border-top: 1px solid var(--ink-light);
+  margin: 1rem 0;
+}
+
+.rule-double {
+  border: none;
+  border-top: 3px double var(--border);
+  margin: 1.25rem 0;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  margin-top: 1rem;
+}
+
+.btn-primary:hover { background: var(--ink-mid); border-color: var(--ink-mid); }
+
+.btn-secondary {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  font-family: 'IM Fell English', serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-secondary:hover { background: var(--paper-dark); }
+
+/* ─── Form Elements ──────────────────────────────────────────────────────────── */
+input[type="text"],
+input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1.5px solid var(--ink-mid);
+  border-radius: 0;
+  font-family: 'IM Fell English', serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus { border-color: var(--ink); }
+
+input::placeholder { color: var(--ink-light); font-style: italic; }
+
+/* ─── Rating Buttons ─────────────────────────────────────────────────────────── */
+.rating-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.rating-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 0.5rem;
+  background: transparent;
+  border: 2px solid var(--ink);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rating-btn:active { transform: scale(0.97); }
+
+.rating-btn:hover,
+.rating-btn.selected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.rating-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  line-height: 1;
+  color: inherit;
+}
+
+.rating-label {
+  font-family: 'IM Fell English', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+  color: inherit;
+}
+
+/* ─── Screen system ──────────────────────────────────────────────────────────── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ─── Voter Page ─────────────────────────────────────────────────────────────── */
+.voter-page main {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+}
+
+.voter-page .screen-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.voter-page .screen-text {
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--ink-mid);
+  margin-bottom: 0.5rem;
+}
+
+.voter-page .screen-text.muted { color: var(--ink-light); font-style: italic; }
+
+.voter-greeting {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-mid);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.poet-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.verse-title {
+  text-align: center;
+  font-style: italic;
+  color: var(--ink-mid);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.vote-instruction {
+  text-align: center;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-top: 1rem;
+}
+
+.vote-confirmed { text-align: center; }
+
+.checkmark {
+  font-size: 3rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.loading-dots { text-align: center; font-size: 1.5rem; color: var(--ink-light); margin-top: 1rem; }
+
+/* ─── Display Page ───────────────────────────────────────────────────────────── */
+.display-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.display-page .masthead-title { font-size: clamp(4rem, 8vw, 8rem); }
+
+.display-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.current-round {
+  text-align: center;
+  padding: 1rem 0;
+  border-bottom: 2px solid var(--paper-dark);
+  margin-bottom: 1.5rem;
+}
+
+.current-round-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+}
+
+.current-round-poet {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+}
+
+.current-round-verse {
+  font-style: italic;
+  color: var(--ink-mid);
+  font-size: 1.1rem;
+}
+
+.current-round-status {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.2rem 0.75rem;
+  border: 1.5px solid var(--red);
+  color: var(--red);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Scoreboard */
+.scoreboard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.scoreboard-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--ink-mid);
+  margin-bottom: 0.5rem;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.score-rank {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--ink-light);
+  text-align: right;
+}
+
+.score-rank.top { color: var(--gold); }
+
+.score-bar-wrap {
+  position: relative;
+}
+
+.score-poet-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.score-poet-verse {
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  margin-bottom: 0.4rem;
+}
+
+.score-bar-track {
+  height: 12px;
+  background: var(--paper-dark);
+  border: 1px solid var(--ink-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: var(--ink);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0%;
+}
+
+.score-bar-fill.active { background: var(--gold); }
+
+.score-numbers {
+  text-align: right;
+  min-width: 6rem;
+}
+
+.score-total {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.score-avg {
+  font-size: 0.8rem;
+  color: var(--ink-light);
+  margin-top: 0.2rem;
+}
+
+.score-votes {
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  font-style: italic;
+}
+
+.display-waiting {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.display-waiting h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+}
+
+.display-waiting p {
+  font-size: 1.2rem;
+  color: var(--ink-mid);
+  font-style: italic;
+}
+
+/* ─── Admin Page ─────────────────────────────────────────────────────────────── */
+.admin-page main {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.admin-page h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.admin-status {
+  background: var(--paper-dark);
+  border: 1.5px solid var(--ink-mid);
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-status strong { font-family: 'Playfair Display', serif; }
+
+.admin-poet-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--paper-dark);
+}
+
+.admin-poet-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.admin-poet-verse {
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--ink-light);
+}
+
+.admin-poet-score {
+  font-size: 0.85rem;
+  color: var(--ink-mid);
+  margin-top: 0.2rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.btn-danger {
+  padding: 0.5rem 1.25rem;
+  background: var(--red);
+  color: var(--paper);
+  border: none;
+  font-family: 'IM Fell English', serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-danger:hover { opacity: 0.85; }
+
+.btn-active {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+  border-color: var(--ink) !important;
+}
+
+#admin-voter-count {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}

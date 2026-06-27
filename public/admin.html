@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nyugat — Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-page main { max-width: 600px; }
+
+    #auth-panel { margin-top: 1.5rem; }
+    #auth-panel h2 { margin-bottom: 1rem; }
+    #auth-error { color: var(--red); font-size: 0.9rem; margin-top: 0.5rem; display: none; }
+
+    #control-panel { display: none; margin-top: 1rem; }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--paper-dark);
+      border: 1.5px solid var(--ink-mid);
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .status-phase {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .phase-voting   { color: var(--red); }
+    .phase-waiting  { color: var(--ink-mid); }
+    .phase-finished { color: var(--gold); }
+
+    .poet-card {
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--paper-dark);
+    }
+
+    .poet-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .poet-card-info .poet-name-admin {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .poet-card-info .poet-verse-admin {
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--ink-light);
+    }
+
+    .poet-card-info .poet-score-admin {
+      font-size: 0.8rem;
+      color: var(--ink-mid);
+      margin-top: 0.25rem;
+    }
+
+    .poet-card-btn {
+      flex-shrink: 0;
+    }
+
+    .btn-open {
+      padding: 0.45rem 1rem;
+      background: transparent;
+      border: 1.5px solid var(--ink);
+      font-family: 'IM Fell English', serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-open:hover { background: var(--ink); color: var(--paper); }
+
+    .btn-open.is-active {
+      background: var(--red);
+      color: var(--paper);
+      border-color: var(--red);
+    }
+
+    .global-controls {
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-ctrl {
+      padding: 0.5rem 1rem;
+      font-family: 'IM Fell English', serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: 1.5px solid var(--ink);
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .btn-ctrl:hover { background: var(--ink); color: var(--paper); }
+
+    .btn-ctrl.danger {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .btn-ctrl.danger:hover { background: var(--red); color: var(--paper); }
+
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 10, 0, 0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .confirm-overlay.visible { display: flex; }
+
+    .confirm-box {
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      padding: 2rem;
+      max-width: 360px;
+      text-align: center;
+    }
+
+    .confirm-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .confirm-box p {
+      font-size: 0.9rem;
+      color: var(--ink-mid);
+      margin-bottom: 1.25rem;
+    }
+
+    .confirm-box .confirm-btns {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body class="admin-page">
+
+  <header class="masthead">
+    <div class="masthead-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</div>
+    <h1 class="masthead-title">NYUGAT</h1>
+    <div class="masthead-sub">Szerkesztőségi vezérlőpult</div>
+  </header>
+
+  <main>
+
+    <!-- ── Bejelentkezés ─────────────────────────────────────────── -->
+    <div id="auth-panel">
+      <div class="ornament">❧</div>
+      <h2>Szerkesztőségi belépés</h2>
+      <form id="auth-form">
+        <input type="password" id="pw-input" placeholder="Jelszó…">
+        <button type="submit" class="btn-primary">Belépés</button>
+      </form>
+      <p id="auth-error">Hibás jelszó.</p>
+    </div>
+
+    <!-- ── Vezérlőpult ───────────────────────────────────────────── -->
+    <div id="control-panel">
+
+      <div class="status-bar">
+        <div>
+          Állapot: <span id="status-phase" class="status-phase"></span>
+          &nbsp;|&nbsp; Résztvevők: <span id="voter-count">0</span>
+        </div>
+        <div id="status-current"></div>
+      </div>
+
+      <div id="poet-list"></div>
+
+      <div class="global-controls">
+        <button class="btn-ctrl" id="btn-close">Szavazás lezárása</button>
+        <button class="btn-ctrl" id="btn-finish">Verseny befejezése</button>
+        <button class="btn-ctrl danger" id="btn-reset">Teljes visszaállítás</button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ── Megerősítő dialog ─────────────────────────────────────── -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <h3>Biztos vagy benne?</h3>
+      <p id="confirm-msg"></p>
+      <div class="confirm-btns">
+        <button class="btn-ctrl danger" id="confirm-yes">Igen, folytatom</button>
+        <button class="btn-ctrl" id="confirm-no">Mégsem</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let pw = '';
+    let adminState = null;
+
+    // ── Auth ──────────────────────────────────────────────────────
+    document.getElementById('auth-form').addEventListener('submit', e => {
+      e.preventDefault();
+      pw = document.getElementById('pw-input').value;
+      socket.emit('admin-auth', { password: pw });
+    });
+
+    socket.on('admin-auth-result', ({ success, adminState: as }) => {
+      if (!success) {
+        document.getElementById('auth-error').style.display = 'block';
+        return;
+      }
+      document.getElementById('auth-panel').style.display = 'none';
+      document.getElementById('control-panel').style.display = 'block';
+      applyAdminState(as);
+    });
+
+    // ── State rendering ────────────────────────────────────────────
+    function applyAdminState(as) {
+      adminState = as;
+
+      document.getElementById('voter-count').textContent = as.voterCount;
+
+      const phaseEl = document.getElementById('status-phase');
+      const phaseLabels = { waiting: 'Várakozás', voting: 'Szavazás aktív', finished: 'Vége' };
+      const phaseClasses = { waiting: 'phase-waiting', voting: 'phase-voting', finished: 'phase-finished' };
+      phaseEl.textContent  = phaseLabels[as.phase] || as.phase;
+      phaseEl.className    = 'status-phase ' + (phaseClasses[as.phase] || '');
+
+      const curEl = document.getElementById('status-current');
+      if (as.phase === 'voting' && as.currentPoetIndex >= 0) {
+        const p = as.poets[as.currentPoetIndex];
+        curEl.textContent = `Jelenlegi: ${p.name}`;
+      } else {
+        curEl.textContent = '';
+      }
+
+      renderPoetList(as);
+    }
+
+    function renderPoetList(as) {
+      const list = document.getElementById('poet-list');
+      list.innerHTML = as.poets.map((p, i) => {
+        const score = as.scores.find(s => s.id === p.id) || {};
+        const isActive = as.phase === 'voting' && as.currentPoetIndex === i;
+        return `
+          <div class="poet-card">
+            <div class="poet-card-header">
+              <div class="poet-card-info">
+                <div class="poet-name-admin">${p.name}</div>
+                <div class="poet-verse-admin">${p.verse}</div>
+                <div class="poet-score-admin">
+                  ${score.totalScore ?? 0} pont · ${score.voteCount ?? 0} szavazat · ⌀ ${score.average ?? 0}
+                </div>
+              </div>
+              <div class="poet-card-btn">
+                <button class="btn-open ${isActive ? 'is-active' : ''}"
+                        onclick="openVoting(${i})"
+                        ${isActive ? 'disabled' : ''}>
+                  ${isActive ? '● Aktív' : 'Szavazás nyitása'}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ── Actions ────────────────────────────────────────────────────
+    function openVoting(poetIndex) {
+      socket.emit('admin-open-voting', { poetIndex, password: pw });
+    }
+
+    document.getElementById('btn-close').addEventListener('click', () => {
+      socket.emit('admin-close-voting', { password: pw });
+    });
+
+    document.getElementById('btn-finish').addEventListener('click', () => {
+      confirm('A verseny befejezése — minden szavazás lezárul.', () => {
+        socket.emit('admin-finish', { password: pw });
+      });
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      confirm('TELJES VISSZAÁLLÍTÁS — minden pont törlődik, a szavazás elölről kezdődik.', () => {
+        socket.emit('admin-reset', { password: pw });
+      });
+    });
+
+    // ── Confirm dialog ─────────────────────────────────────────────
+    let confirmCallback = null;
+    function confirm(msg, cb) {
+      document.getElementById('confirm-msg').textContent = msg;
+      document.getElementById('confirm-overlay').classList.add('visible');
+      confirmCallback = cb;
+    }
+
+    document.getElementById('confirm-yes').addEventListener('click', () => {
+      document.getElementById('confirm-overlay').classList.remove('visible');
+      if (confirmCallback) confirmCallback();
+      confirmCallback = null;
+    });
+
+    document.getElementById('confirm-no').addEventListener('click', () => {
+      document.getElementById('confirm-overlay').classList.remove('visible');
+      confirmCallback = null;
+    });
+
+    // ── Socket events ──────────────────────────────────────────────
+    socket.on('phase-change', () => {
+      socket.emit('admin-auth', { password: pw }); // refresh state
+    });
+
+    socket.on('scores-update', (scores) => {
+      if (!adminState) return;
+      adminState.scores = scores;
+      renderPoetList(adminState);
+    });
+
+    socket.on('admin-state-update', applyAdminState);
+
+    socket.on('voter-count', count => {
+      document.getElementById('voter-count').textContent = count;
+    });
+
+    socket.on('reset', () => {
+      socket.emit('admin-auth', { password: pw });
+    });
+  </script>
+</body>
+</html>

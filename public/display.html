@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nyugat — Kivetítő</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    html, body { height: 100%; overflow: hidden; background: var(--paper); }
+
+    /* ── Scene system ──────────────────────────────────────────── */
+    .scene {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+      will-change: opacity;
+    }
+    .scene.active { opacity: 1; pointer-events: auto; }
+
+    /* ═══════════════════════════════════════════════════════════
+       JELENET 1 — VÁRAKOZÁS
+    ═══════════════════════════════════════════════════════════ */
+    #scene-waiting {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 0;
+    }
+
+    .w-frame {
+      border: 2px solid var(--ink);
+      padding: 3.5rem 6rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .w-frame::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid var(--ink-light);
+      pointer-events: none;
+    }
+
+    .w-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .w-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(5rem, 14vw, 11rem);
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .w-sub {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+      margin-top: 0.4rem;
+    }
+
+    .w-divider {
+      width: 100%;
+      border: none;
+      border-top: 3px double var(--border);
+      margin: 1.5rem 0;
+    }
+
+    .w-tagline {
+      font-style: italic;
+      color: var(--ink-mid);
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      margin-bottom: 1.25rem;
+    }
+
+    .w-ornament {
+      color: var(--gold);
+      font-size: 1.4rem;
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    .w-waiting {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      color: var(--ink-light);
+      font-style: italic;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.3; }
+      50%       { opacity: 1; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       JELENET 2 — ELŐADÓ
+    ═══════════════════════════════════════════════════════════ */
+    #scene-performer { flex-direction: row; }
+
+    /* Left: image */
+    .perf-img-side {
+      flex: 0 0 45%;
+      position: relative;
+      overflow: hidden;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .perf-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      filter: sepia(50%) contrast(1.05) brightness(0.9);
+      transition: opacity 0.8s ease;
+    }
+
+    .perf-monogram {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(5rem, 12vw, 10rem);
+      font-weight: 900;
+      color: var(--paper);
+      opacity: 0.15;
+      user-select: none;
+      z-index: 1;
+    }
+
+    /* gradient overlay on image */
+    .perf-img-side::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 60%, var(--paper) 100%);
+      pointer-events: none;
+    }
+
+    /* Right: info */
+    .perf-info-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 5% 3rem 4%;
+    }
+
+    .perf-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--red);
+      color: var(--paper);
+      padding: 0.3rem 0.75rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      align-self: flex-start;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--paper);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    .perf-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .perf-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5.5vw, 5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    .perf-verse {
+      font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      color: var(--ink-mid);
+      margin-bottom: 2.5rem;
+    }
+
+    .perf-divider {
+      border: none;
+      border-top: 3px double var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .perf-count-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 0.25rem;
+    }
+
+    .perf-count {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(4rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--ink);
+      transition: transform 0.2s ease;
+    }
+
+    .perf-count.bump {
+      transform: scale(1.12);
+    }
+
+    .perf-count-sub {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      margin-top: 0.25rem;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       JELENET 3 — VÉGEREDMÉNY
+    ═══════════════════════════════════════════════════════════ */
+    #scene-results {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .results-masthead {
+      text-align: center;
+      border-bottom: 4px double var(--border);
+      padding: 0.6rem 2rem;
+      flex-shrink: 0;
+    }
+
+    .results-masthead-eyebrow {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+
+    .results-masthead-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: 0.25em;
+      line-height: 1;
+    }
+
+    .results-masthead-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+    }
+
+    .results-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 4rem 2rem;
+    }
+
+    .results-headline {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .results-headline-top {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+
+    .results-headline-main {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 4vw, 3rem);
+      font-weight: 900;
+    }
+
+    /* Result rows */
+    .result-row {
+      display: grid;
+      grid-template-columns: 3rem 90px 1fr 7rem;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--paper-dark);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .result-row.revealed { opacity: 1; transform: translateY(0); }
+
+    .result-rank {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 900;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .rank-1 { color: #A0722A; }
+    .rank-2 { color: #7A7A7A; }
+    .rank-3 { color: #7A4A1F; }
+    .rank-other { color: var(--ink-light); }
+
+    .result-thumb-wrap {
+      width: 90px;
+      height: 90px;
+      overflow: hidden;
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .result-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      filter: sepia(30%);
+      display: block;
+    }
+
+    .result-thumb-mono {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--paper);
+      opacity: 0.35;
+    }
+
+    .result-info { min-width: 0; }
+
+    .result-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .result-verse {
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      margin-bottom: 0.4rem;
+    }
+
+    .result-bar-track {
+      height: 8px;
+      background: var(--paper-dark);
+      border: 1px solid var(--ink-light);
+      overflow: hidden;
+    }
+
+    .result-bar-fill {
+      height: 100%;
+      background: var(--ink);
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .result-score { text-align: right; }
+
+    .result-score-total {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .result-score-meta {
+      font-size: 0.7rem;
+      color: var(--ink-light);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════════════════
+       JELENET 1: VÁRAKOZÁS
+  ════════════════════════════════════════════════════════════ -->
+  <div id="scene-waiting" class="scene active">
+    <div class="w-frame">
+      <p class="w-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</p>
+      <div class="w-title">NYUGAT</div>
+      <p class="w-sub">A „Figyelő" új folyama &mdash; Főszerkesztő: Ignotus</p>
+      <hr class="w-divider">
+      <p class="w-tagline">Így csajozik a Nyugat</p>
+      <div class="w-ornament">❧ &nbsp; ✦ &nbsp; ❧</div>
+      <p class="w-waiting">Az előadás hamarosan kezdődik&hellip;</p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       JELENET 2: ELŐADÓ
+  ════════════════════════════════════════════════════════════ -->
+  <div id="scene-performer" class="scene">
+
+    <div class="perf-img-side">
+      <img id="perf-photo" class="perf-photo" src="" alt=""
+           onerror="this.style.display='none'">
+      <div id="perf-mono" class="perf-monogram"></div>
+    </div>
+
+    <div class="perf-info-side">
+      <div class="perf-live-badge">
+        <div class="live-dot"></div>
+        Szavazás folyamatban
+      </div>
+      <p class="perf-label">Előadó</p>
+      <h2 id="perf-name" class="perf-name"></h2>
+      <p  id="perf-verse" class="perf-verse"></p>
+      <hr class="perf-divider">
+      <p class="perf-count-label">Beérkezett szavazat</p>
+      <div id="perf-count" class="perf-count">0</div>
+      <p class="perf-count-sub">szavazó értékelte</p>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       JELENET 3: VÉGEREDMÉNY
+  ════════════════════════════════════════════════════════════ -->
+  <div id="scene-results" class="scene">
+
+    <div class="results-masthead">
+      <div class="results-masthead-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</div>
+      <div class="results-masthead-title">NYUGAT</div>
+      <div class="results-masthead-sub">A „Figyelő" új folyama &mdash; Főszerkesztő: Ignotus</div>
+    </div>
+
+    <div class="results-body">
+      <div class="results-headline">
+        <div class="results-headline-top">— Végeredmény —</div>
+        <div class="results-headline-main">A szerkesztőség ítélete</div>
+      </div>
+      <div id="results-list"></div>
+    </div>
+
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // ── Képek ──────────────────────────────────────────────────────
+    // Tedd a képeket a public/images/ mappába ezekkel a nevekkel:
+    const poetImages = {
+      'Ady Endre':         '/images/ady-endre.jpg',
+      'Babits Mihály':     '/images/babits-mihaly.jpg',
+      'Kosztolányi Dezső': '/images/kosztolanyi-dezso.jpg',
+      'Móricz Zsigmond':   '/images/moricz-zsigmond.jpg',
+      'Karinthy Frigyes':  '/images/karinthy-frigyes.jpg',
+    };
+
+    function initials(name) {
+      return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    }
+
+    // ── Jelenet-váltás ─────────────────────────────────────────────
+    let currentScene = 'waiting';
+
+    function switchScene(id) {
+      if (currentScene === id) return;
+      document.getElementById('scene-' + currentScene).classList.remove('active');
+      document.getElementById('scene-' + id).classList.add('active');
+      currentScene = id;
+    }
+
+    // ── Előadó jelenet ─────────────────────────────────────────────
+    function showPerformer(poet, voteCount) {
+      document.getElementById('perf-name').textContent  = poet.name;
+      document.getElementById('perf-verse').textContent = poet.verse;
+      document.getElementById('perf-count').textContent = voteCount || 0;
+      document.getElementById('perf-mono').textContent  = initials(poet.name);
+
+      const photo = document.getElementById('perf-photo');
+      photo.style.display = '';
+      photo.src = poetImages[poet.name] || '';
+      switchScene('performer');
+    }
+
+    // ── Szavazat bump animáció ─────────────────────────────────────
+    function bumpCount(val) {
+      const el = document.getElementById('perf-count');
+      el.textContent = val;
+      el.classList.remove('bump');
+      void el.offsetWidth;
+      el.classList.add('bump');
+      setTimeout(() => el.classList.remove('bump'), 250);
+    }
+
+    // ── Végeredmény jelenet ────────────────────────────────────────
+    function showResults(scores) {
+      const sorted   = [...scores].sort((a, b) => b.totalScore - a.totalScore);
+      const maxScore = sorted[0]?.totalScore || 1;
+
+      document.getElementById('results-list').innerHTML = sorted.map((p, i) => {
+        const pct      = (p.totalScore / maxScore) * 100;
+        const rankCls  = ['rank-1','rank-2','rank-3'][i] || 'rank-other';
+        const imgSrc   = poetImages[p.name] || '';
+        const mono     = initials(p.name);
+        return `
+          <div class="result-row" id="rr-${p.id}" data-pct="${pct}">
+            <div class="result-rank ${rankCls}">${i + 1}.</div>
+            <div class="result-thumb-wrap">
+              <img class="result-thumb" src="${imgSrc}" alt="${p.name}"
+                   onerror="this.outerHTML='<div class=\\'result-thumb-mono\\'>${mono}</div>'">
+            </div>
+            <div class="result-info">
+              <div class="result-name">${p.name}</div>
+              <div class="result-verse">${p.verse}</div>
+              <div class="result-bar-track">
+                <div class="result-bar-fill" id="bar-${p.id}"></div>
+              </div>
+            </div>
+            <div class="result-score">
+              <div class="result-score-total">${p.totalScore}</div>
+              <div class="result-score-meta">${p.voteCount} szavazat</div>
+              <div class="result-score-meta">⌀ ${p.average}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      switchScene('results');
+
+      // Lépcsőzetes megjelenés (utolsótól az elsőig — mint egy show)
+      const reveOrder = [...sorted].reverse();
+      reveOrder.forEach((p, i) => {
+        setTimeout(() => {
+          const row = document.getElementById('rr-' + p.id);
+          if (!row) return;
+          row.classList.add('revealed');
+          setTimeout(() => {
+            const bar = document.getElementById('bar-' + p.id);
+            if (bar) bar.style.width = row.dataset.pct + '%';
+          }, 300);
+        }, i * 350);
+      });
+    }
+
+    // ── Állapot alkalmazása ────────────────────────────────────────
+    function applyState(s) {
+      if (s.phase === 'finished') {
+        showResults(s.scores);
+      } else if (s.phase === 'voting' && s.currentPoet) {
+        const active = (s.scores || []).find(sc => sc.isActive);
+        showPerformer(s.currentPoet, active?.voteCount || 0);
+      } else {
+        switchScene('waiting');
+      }
+    }
+
+    // ── Socket events ──────────────────────────────────────────────
+    socket.on('state', applyState);
+
+    socket.on('scores-update', scores => {
+      const active = scores.find(s => s.isActive);
+      if (active && currentScene === 'performer') {
+        bumpCount(active.voteCount);
+      }
+    });
+
+    socket.on('phase-change', () => socket.emit('request-state'));
+    socket.on('reset',        () => socket.emit('request-state'));
+  </script>
+</body>
+</html>
