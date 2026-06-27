@@ -101,6 +101,34 @@
       font-style: italic;
     }
 
+    .w-qr-wrap {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .w-qr-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+
+    #w-qr canvas, #w-qr img {
+      border: 6px solid var(--paper);
+      box-shadow: 0 0 0 1.5px var(--ink);
+      display: block;
+    }
+
+    .w-qr-url {
+      font-size: 0.7rem;
+      color: var(--ink-mid);
+      letter-spacing: 0.05em;
+      font-style: italic;
+    }
+
     @keyframes breathe {
       0%, 100% { opacity: 0.3; }
       50%       { opacity: 1; }
@@ -525,6 +553,12 @@
       <p class="w-tagline">Így csajozik a Nyugat</p>
       <div class="w-ornament">❧ &nbsp; ✦ &nbsp; ❧</div>
       <p class="w-waiting">Az előadás hamarosan kezdődik&hellip;</p>
+
+      <div class="w-qr-wrap">
+        <p class="w-qr-label">Csatlakozz a szavazáshoz</p>
+        <div id="w-qr"></div>
+        <p id="w-qr-url" class="w-qr-url"></p>
+      </div>
     </div>
   </div>
 
@@ -588,9 +622,24 @@
 
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
+
+    // ── QR kód a várakozó képernyőn ────────────────────────────────
+    (function() {
+      const url = window.location.origin;
+      new QRCode(document.getElementById('w-qr'), {
+        text:         url,
+        width:        160,
+        height:       160,
+        colorDark:    '#1A0A00',
+        colorLight:   '#F0E6CA',
+        correctLevel: QRCode.CorrectLevel.M,
+      });
+      document.getElementById('w-qr-url').textContent = url;
+    })();
 
     // ── Képek ──────────────────────────────────────────────────────
     // Tedd a képeket a public/images/ mappába ezekkel a nevekkel:
