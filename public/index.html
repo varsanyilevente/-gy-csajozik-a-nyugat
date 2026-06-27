@@ -94,17 +94,24 @@
     .voted-icon.super { color: #2196F3; }
 
     /* ── TINDER CARD SCREEN ──────────────────────────────────────── */
+    /* CSS Grid: 1fr az összes szabad teret a kártyának adja,
+       az auto sor a gombok természetes magasságát veszi fel.
+       Ez garantálja, hogy a gombok sosem lógnak ki. */
     #screen-voting {
-      padding: 0.3rem 0 0;    /* nincs oldalsó padding → kártya teljes szélesség */
-      gap: 0.3rem;
+      padding: 0;
+      gap: 0;
+      display: none;  /* .screen alapértelmezés */
+    }
+    #screen-voting.active {
+      display: grid;
+      grid-template-rows: 1fr auto;
     }
 
     .card-wrap {
-      flex: 1;
-      min-height: 0; /* kötelező — enélkül kinyomja a gombokat */
+      min-height: 0;
       position: relative;
       overflow: hidden;
-      border-radius: 0;   /* teljes szélességű, éles szélek */
+      border-radius: 0;
     }
 
     .tinder-card {
