@@ -147,6 +147,7 @@
       object-position: top center;
       pointer-events: none;
       display: block;
+      z-index: 1;   /* mindig a mono felett, CSS-szinten */
     }
 
     .card-gradient {
@@ -333,8 +334,8 @@
       <div class="card-wrap">
         <div id="tinder-card" class="tinder-card">
 
+          <div id="card-mono" class="card-mono"></div>
           <img id="card-photo" class="card-photo" src="" alt="">
-          <div id="card-mono" class="card-mono" style="display:none"></div>
           <div class="card-gradient"></div>
 
           <div id="stamp-like"  class="swipe-stamp stamp-like">LIKE ❤</div>
@@ -430,20 +431,15 @@
       document.getElementById('card-verse').textContent    = '„' + poet.verse + '"';
       const mono  = document.getElementById('card-mono');
       const photo = document.getElementById('card-photo');
-      mono.textContent  = initials(poet.name);
-      mono.style.display = 'none';
+      mono.textContent = initials(poet.name);
+      // A fotó z-index:1 révén fizikailag takarja a monogramot —
+      // csak akkor kell a monogramot előhozni ha a fotó sikertelen.
       photo.style.display = '';
-
-      const imgSrc = poetImages[poet.name] || '';
-      photo.onload  = () => { mono.style.display = 'none'; };
-      photo.onerror = () => { photo.style.display = 'none'; mono.style.display = 'flex'; };
-      photo.src = imgSrc;
-
-      // Cached képeknél onload nem tüzel — azonnal ellenőrzünk
-      if (photo.complete) {
-        if (photo.naturalWidth > 0) mono.style.display = 'none';
-        else { photo.style.display = 'none'; mono.style.display = 'flex'; }
-      }
+      photo.style.zIndex  = '1';
+      photo.onload  = () => {};
+      photo.onerror = () => { photo.style.display = 'none'; };
+      photo.src = poetImages[poet.name] || '';
+      if (photo.complete && photo.naturalWidth === 0) photo.style.display = 'none';
 
       const card = document.getElementById('tinder-card');
       card.classList.remove('snapping','flying');
