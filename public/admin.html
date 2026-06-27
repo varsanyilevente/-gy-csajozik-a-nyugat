@@ -38,10 +38,7 @@
     .phase-waiting  { color: var(--ink-mid); }
     .phase-finished { color: var(--gold); }
 
-    .poet-card {
-      padding: 0.9rem 0;
-      border-bottom: 1px solid var(--paper-dark);
-    }
+    .poet-card { padding: 0.9rem 0; border-bottom: 1px solid var(--paper-dark); }
 
     .poet-card-header {
       display: flex;
@@ -56,21 +53,10 @@
       font-weight: 700;
     }
 
-    .poet-card-info .poet-verse-admin {
-      font-style: italic;
-      font-size: 0.85rem;
-      color: var(--ink-light);
-    }
+    .poet-card-info .poet-verse-admin { font-style: italic; font-size: 0.85rem; color: var(--ink-light); }
+    .poet-card-info .poet-score-admin { font-size: 0.8rem; color: var(--ink-mid); margin-top: 0.25rem; }
 
-    .poet-card-info .poet-score-admin {
-      font-size: 0.8rem;
-      color: var(--ink-mid);
-      margin-top: 0.25rem;
-    }
-
-    .poet-card-btn {
-      flex-shrink: 0;
-    }
+    .poet-card-btn { flex-shrink: 0; }
 
     .btn-open {
       padding: 0.45rem 1rem;
@@ -110,11 +96,7 @@
 
     .btn-ctrl:hover { background: var(--ink); color: var(--paper); }
 
-    .btn-ctrl.danger {
-      border-color: var(--red);
-      color: var(--red);
-    }
-
+    .btn-ctrl.danger { border-color: var(--red); color: var(--red); }
     .btn-ctrl.danger:hover { background: var(--red); color: var(--paper); }
 
     .confirm-overlay {
@@ -137,23 +119,9 @@
       text-align: center;
     }
 
-    .confirm-box h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .confirm-box p {
-      font-size: 0.9rem;
-      color: var(--ink-mid);
-      margin-bottom: 1.25rem;
-    }
-
-    .confirm-box .confirm-btns {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-    }
+    .confirm-box h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.75rem; }
+    .confirm-box p  { font-size: 0.9rem; color: var(--ink-mid); margin-bottom: 1.25rem; }
+    .confirm-box .confirm-btns { display: flex; gap: 0.75rem; justify-content: center; }
   </style>
 </head>
 <body class="admin-page">
@@ -166,7 +134,6 @@
 
   <main>
 
-    <!-- ── Bejelentkezés ─────────────────────────────────────────── -->
     <div id="auth-panel">
       <div class="ornament">❧</div>
       <h2>Szerkesztőségi belépés</h2>
@@ -177,7 +144,6 @@
       <p id="auth-error">Hibás jelszó.</p>
     </div>
 
-    <!-- ── Vezérlőpult ───────────────────────────────────────────── -->
     <div id="control-panel">
 
       <div class="status-bar">
@@ -200,7 +166,6 @@
 
   </main>
 
-  <!-- ── Megerősítő dialog ─────────────────────────────────────── -->
   <div class="confirm-overlay" id="confirm-overlay">
     <div class="confirm-box">
       <h3>Biztos vagy benne?</h3>
@@ -212,57 +177,88 @@
     </div>
   </div>
 
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script>
-    const socket = io();
-    let pw = '';
-    let adminState = null;
+    firebase.initializeApp({
+      apiKey:            "AIzaSyCwGOKGOiDqQrmDjfADi8zPr4B8T_kRFgY",
+      authDomain:        "nyugat-szavazas.firebaseapp.com",
+      databaseURL:       "https://nyugat-szavazas-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId:         "nyugat-szavazas",
+      storageBucket:     "nyugat-szavazas.firebasestorage.app",
+      messagingSenderId: "882814100864",
+      appId:             "1:882814100864:web:dc03a77bebe475e8c3cd65"
+    });
+    const db = firebase.database();
+
+    const ADMIN_PASSWORD = 'nyugat1908';
+
+    const POETS = [
+      { id: 0, name: 'Ady Endre',         verse: 'Vér és arany'              },
+      { id: 1, name: 'Babits Mihály',      verse: 'Levelek Iris koszorújából' },
+      { id: 2, name: 'Kosztolányi Dezső',  verse: 'Négy fal között'           },
+      { id: 3, name: 'Móricz Zsigmond',    verse: 'Sárarany'                  },
+      { id: 4, name: 'Karinthy Frigyes',   verse: 'Így írtok ti'              },
+    ];
+
+    let isAuthed  = false;
+    let adminPhase = 'waiting';
+    let adminPoetIdx = -1;
+    let adminScores = {};
 
     // ── Auth ──────────────────────────────────────────────────────
     document.getElementById('auth-form').addEventListener('submit', e => {
       e.preventDefault();
-      pw = document.getElementById('pw-input').value;
-      socket.emit('admin-auth', { password: pw });
-    });
-
-    socket.on('admin-auth-result', ({ success, adminState: as }) => {
-      if (!success) {
+      const pw = document.getElementById('pw-input').value;
+      if (pw !== ADMIN_PASSWORD) {
         document.getElementById('auth-error').style.display = 'block';
         return;
       }
-      document.getElementById('auth-panel').style.display = 'none';
+      isAuthed = true;
+      document.getElementById('auth-panel').style.display    = 'none';
       document.getElementById('control-panel').style.display = 'block';
-      applyAdminState(as);
+      initListeners();
     });
 
-    // ── State rendering ────────────────────────────────────────────
-    function applyAdminState(as) {
-      adminState = as;
+    // ── Firebase listeners ─────────────────────────────────────────
+    function initListeners() {
+      db.ref('state').on('value', snap => {
+        const s = snap.val() || {};
+        adminPhase   = s.phase || 'waiting';
+        adminPoetIdx = (s.currentPoetIndex !== undefined) ? s.currentPoetIndex : -1;
+        renderStatus();
+        renderPoetList();
+      });
 
-      document.getElementById('voter-count').textContent = as.voterCount;
+      db.ref('scores').on('value', snap => {
+        adminScores = snap.val() || {};
+        renderPoetList();
+      });
 
-      const phaseEl = document.getElementById('status-phase');
-      const phaseLabels = { waiting: 'Várakozás', voting: 'Szavazás aktív', finished: 'Vége' };
-      const phaseClasses = { waiting: 'phase-waiting', voting: 'phase-voting', finished: 'phase-finished' };
-      phaseEl.textContent  = phaseLabels[as.phase] || as.phase;
-      phaseEl.className    = 'status-phase ' + (phaseClasses[as.phase] || '');
-
-      const curEl = document.getElementById('status-current');
-      if (as.phase === 'voting' && as.currentPoetIndex >= 0) {
-        const p = as.poets[as.currentPoetIndex];
-        curEl.textContent = `Jelenlegi: ${p.name}`;
-      } else {
-        curEl.textContent = '';
-      }
-
-      renderPoetList(as);
+      db.ref('voters').on('value', snap => {
+        document.getElementById('voter-count').textContent = snap.numChildren();
+      });
     }
 
-    function renderPoetList(as) {
-      const list = document.getElementById('poet-list');
-      list.innerHTML = as.poets.map((p, i) => {
-        const score = as.scores.find(s => s.id === p.id) || {};
-        const isActive = as.phase === 'voting' && as.currentPoetIndex === i;
+    // ── Render ─────────────────────────────────────────────────────
+    function renderStatus() {
+      const phaseLabels  = { waiting: 'Várakozás', voting: 'Szavazás aktív', finished: 'Vége' };
+      const phaseClasses = { waiting: 'phase-waiting', voting: 'phase-voting', finished: 'phase-finished' };
+      const phaseEl = document.getElementById('status-phase');
+      phaseEl.textContent = phaseLabels[adminPhase] || adminPhase;
+      phaseEl.className   = 'status-phase ' + (phaseClasses[adminPhase] || '');
+
+      const curEl = document.getElementById('status-current');
+      curEl.textContent = (adminPhase === 'voting' && adminPoetIdx >= 0)
+        ? 'Jelenlegi: ' + POETS[adminPoetIdx].name
+        : '';
+    }
+
+    function renderPoetList() {
+      document.getElementById('poet-list').innerHTML = POETS.map((p, i) => {
+        const s        = adminScores[i] || { totalScore: 0, voteCount: 0 };
+        const avg      = s.voteCount > 0 ? +(s.totalScore / s.voteCount).toFixed(2) : 0;
+        const isActive = adminPhase === 'voting' && adminPoetIdx === i;
         return `
           <div class="poet-card">
             <div class="poet-card-header">
@@ -270,7 +266,7 @@
                 <div class="poet-name-admin">${p.name}</div>
                 <div class="poet-verse-admin">${p.verse}</div>
                 <div class="poet-score-admin">
-                  ${score.totalScore ?? 0} pont · ${score.voteCount ?? 0} szavazat · ⌀ ${score.average ?? 0}
+                  ${s.totalScore || 0} pont · ${s.voteCount || 0} szavazat · ⌀ ${avg}
                 </div>
               </div>
               <div class="poet-card-btn">
@@ -287,64 +283,54 @@
     }
 
     // ── Actions ────────────────────────────────────────────────────
-    function openVoting(poetIndex) {
-      socket.emit('admin-open-voting', { poetIndex, password: pw });
+    async function openVoting(poetIndex) {
+      const votersSnap = await db.ref('voters').get();
+      const updates = { 'state/phase': 'voting', 'state/currentPoetIndex': poetIndex };
+      votersSnap.forEach(child => {
+        updates['voters/' + child.key + '/hasVoted'] = false;
+      });
+      await db.ref().update(updates);
     }
 
     document.getElementById('btn-close').addEventListener('click', () => {
-      socket.emit('admin-close-voting', { password: pw });
+      db.ref('state/phase').set('waiting');
     });
 
     document.getElementById('btn-finish').addEventListener('click', () => {
-      confirm('A verseny befejezése — minden szavazás lezárul.', () => {
-        socket.emit('admin-finish', { password: pw });
+      askConfirm('A verseny befejezése — minden szavazás lezárul.', async () => {
+        await db.ref('state').update({ phase: 'finished', currentPoetIndex: -1 });
       });
     });
 
     document.getElementById('btn-reset').addEventListener('click', () => {
-      confirm('TELJES VISSZAÁLLÍTÁS — minden pont törlődik, a szavazás elölről kezdődik.', () => {
-        socket.emit('admin-reset', { password: pw });
+      askConfirm('TELJES VISSZAÁLLÍTÁS — minden pont törlődik, a szavazás elölről kezdődik.', async () => {
+        await db.ref().update({
+          state:     { phase: 'waiting', currentPoetIndex: -1 },
+          scores:    null,
+          voters:    null,
+          lastVote:  null,
+        });
       });
     });
 
     // ── Confirm dialog ─────────────────────────────────────────────
-    let confirmCallback = null;
-    function confirm(msg, cb) {
+    let confirmCb = null;
+
+    function askConfirm(msg, cb) {
       document.getElementById('confirm-msg').textContent = msg;
       document.getElementById('confirm-overlay').classList.add('visible');
-      confirmCallback = cb;
+      confirmCb = cb;
     }
 
     document.getElementById('confirm-yes').addEventListener('click', () => {
       document.getElementById('confirm-overlay').classList.remove('visible');
-      if (confirmCallback) confirmCallback();
-      confirmCallback = null;
+      if (confirmCb) confirmCb();
+      confirmCb = null;
     });
 
     document.getElementById('confirm-no').addEventListener('click', () => {
       document.getElementById('confirm-overlay').classList.remove('visible');
-      confirmCallback = null;
-    });
-
-    // ── Socket events ──────────────────────────────────────────────
-    socket.on('phase-change', () => {
-      socket.emit('admin-auth', { password: pw }); // refresh state
-    });
-
-    socket.on('scores-update', (scores) => {
-      if (!adminState) return;
-      adminState.scores = scores;
-      renderPoetList(adminState);
-    });
-
-    socket.on('admin-state-update', applyAdminState);
-
-    socket.on('voter-count', count => {
-      document.getElementById('voter-count').textContent = count;
-    });
-
-    socket.on('reset', () => {
-      socket.emit('admin-auth', { password: pw });
+      confirmCb = null;
     });
   </script>
 </body>

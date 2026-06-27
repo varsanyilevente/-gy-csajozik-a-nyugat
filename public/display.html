@@ -28,7 +28,6 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      gap: 0;
     }
 
     .w-frame {
@@ -139,7 +138,6 @@
     ═══════════════════════════════════════════════════════════ */
     #scene-performer { flex-direction: row; }
 
-    /* Left: image */
     .perf-img-side {
       flex: 0 0 45%;
       position: relative;
@@ -161,8 +159,6 @@
       transition: opacity 0.8s ease;
     }
 
-
-    /* gradient overlay on image */
     .perf-img-side::after {
       content: '';
       position: absolute;
@@ -171,7 +167,6 @@
       pointer-events: none;
     }
 
-    /* Right: info */
     .perf-info-side {
       flex: 1;
       display: flex;
@@ -195,8 +190,7 @@
     }
 
     .live-dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--paper);
       animation: blink 1.2s ease-in-out infinite;
@@ -254,10 +248,7 @@
       transition: transform 0.2s ease;
     }
 
-    .perf-count.bump {
-      transform: scale(1.2);
-      color: var(--gold);
-    }
+    .perf-count.bump { transform: scale(1.2); color: var(--gold); }
 
     .perf-count-sub {
       font-style: italic;
@@ -267,11 +258,7 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Töltősáv */
-    .score-bar-outer {
-      width: 100%;
-      margin-top: 1rem;
-    }
+    .score-bar-outer { width: 100%; margin-top: 1rem; }
 
     .score-bar-label-row {
       display: flex;
@@ -296,14 +283,12 @@
       height: 100%;
       width: 0%;
       background: var(--ink);
-      transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1),
-                  background 0.3s ease;
+      transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
       position: relative;
     }
 
     .score-bar-fill.high { background: var(--gold); }
 
-    /* Belső animált csík */
     .score-bar-fill::after {
       content: '';
       position: absolute;
@@ -334,7 +319,6 @@
       overflow: visible;
     }
 
-    /* 5 különböző füst-szerű pálya — JS random választja */
     @keyframes vf1 {
       0%   { transform: translate(0,0)         scale(1)    rotate(0deg);   opacity:1; }
       20%  { transform: translate(12px,-28px)  scale(1.15) rotate(7deg);   opacity:1; }
@@ -384,10 +368,7 @@
     /* ═══════════════════════════════════════════════════════════
        JELENET 3 — VÉGEREDMÉNY
     ═══════════════════════════════════════════════════════════ */
-    #scene-results {
-      padding: 0;
-      overflow: hidden;
-    }
+    #scene-results { padding: 0; overflow: hidden; }
 
     .results-masthead {
       text-align: center;
@@ -424,10 +405,7 @@
       padding: 1.5rem 4rem 2rem;
     }
 
-    .results-headline {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
+    .results-headline { text-align: center; margin-bottom: 1.5rem; }
 
     .results-headline-top {
       font-size: 0.7rem;
@@ -442,7 +420,6 @@
       font-weight: 900;
     }
 
-    /* Result rows */
     .result-row {
       display: grid;
       grid-template-columns: 3rem 90px 1fr 7rem;
@@ -471,8 +448,7 @@
     .rank-other { color: var(--ink-light); }
 
     .result-thumb-wrap {
-      width: 90px;
-      height: 90px;
+      width: 90px; height: 90px;
       overflow: hidden;
       background: var(--ink);
       display: flex;
@@ -482,14 +458,12 @@
     }
 
     .result-thumb {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       object-position: top;
       filter: sepia(30%);
       display: block;
     }
-
 
     .result-info { min-width: 0; }
 
@@ -532,18 +506,12 @@
       line-height: 1;
     }
 
-    .result-score-meta {
-      font-size: 0.7rem;
-      color: var(--ink-light);
-      font-style: italic;
-    }
+    .result-score-meta { font-size: 0.7rem; color: var(--ink-light); font-style: italic; }
   </style>
 </head>
 <body>
 
-  <!-- ════════════════════════════════════════════════════════════
-       JELENET 1: VÁRAKOZÁS
-  ════════════════════════════════════════════════════════════ -->
+  <!-- JELENET 1: VÁRAKOZÁS -->
   <div id="scene-waiting" class="scene active">
     <div class="w-frame">
       <p class="w-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</p>
@@ -553,7 +521,6 @@
       <p class="w-tagline">Így csajozik a Nyugat</p>
       <div class="w-ornament">❧ &nbsp; ✦ &nbsp; ❧</div>
       <p class="w-waiting">Az előadás hamarosan kezdődik&hellip;</p>
-
       <div class="w-qr-wrap">
         <p class="w-qr-label">Csatlakozz a szavazáshoz</p>
         <div id="w-qr"></div>
@@ -562,16 +529,11 @@
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════
-       JELENET 2: ELŐADÓ
-  ════════════════════════════════════════════════════════════ -->
+  <!-- JELENET 2: ELŐADÓ -->
   <div id="scene-performer" class="scene">
-
     <div class="perf-img-side">
-      <img id="perf-photo" class="perf-photo" src="" alt=""
-           onerror="this.style.display='none'">
+      <img id="perf-photo" class="perf-photo" src="" alt="" onerror="this.style.display='none'">
     </div>
-
     <div class="perf-info-side">
       <div class="perf-live-badge">
         <div class="live-dot"></div>
@@ -584,7 +546,6 @@
       <p class="perf-count-label">Összpontszám</p>
       <div id="perf-count" class="perf-count">0</div>
       <p id="perf-votes-sub" class="perf-count-sub">0 szavazó</p>
-
       <div class="score-bar-outer" style="position:relative">
         <div id="vote-fx" class="vote-fx"></div>
         <div class="score-bar-label-row">
@@ -596,22 +557,16 @@
         </div>
         <div id="perf-bar-pct" class="score-bar-pct">0%</div>
       </div>
-
     </div>
-
   </div>
 
-  <!-- ════════════════════════════════════════════════════════════
-       JELENET 3: VÉGEREDMÉNY
-  ════════════════════════════════════════════════════════════ -->
+  <!-- JELENET 3: VÉGEREDMÉNY -->
   <div id="scene-results" class="scene">
-
     <div class="results-masthead">
       <div class="results-masthead-eyebrow">I. ÉVFOLYAM · 1908 JANUÁR 1. · I. SZÁM</div>
       <div class="results-masthead-title">NYUGAT</div>
       <div class="results-masthead-sub">A „Figyelő" új folyama &mdash; Főszerkesztő: Ignotus</div>
     </div>
-
     <div class="results-body">
       <div class="results-headline">
         <div class="results-headline-top">— Végeredmény —</div>
@@ -619,42 +574,59 @@
       </div>
       <div id="results-list"></div>
     </div>
-
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
   <script>
-    const socket = io();
+    firebase.initializeApp({
+      apiKey:            "AIzaSyCwGOKGOiDqQrmDjfADi8zPr4B8T_kRFgY",
+      authDomain:        "nyugat-szavazas.firebaseapp.com",
+      databaseURL:       "https://nyugat-szavazas-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId:         "nyugat-szavazas",
+      storageBucket:     "nyugat-szavazas.firebasestorage.app",
+      messagingSenderId: "882814100864",
+      appId:             "1:882814100864:web:dc03a77bebe475e8c3cd65"
+    });
+    const db = firebase.database();
 
-    // ── QR kód a várakozó képernyőn ────────────────────────────────
-    (function() {
-      const url = window.location.origin;
+    const POETS = [
+      { id: 0, name: 'Ady Endre',         verse: 'Vér és arany',               age: 31, distance: '2 km'  },
+      { id: 1, name: 'Babits Mihály',      verse: 'Levelek Iris koszorújából',  age: 25, distance: '8 km'  },
+      { id: 2, name: 'Kosztolányi Dezső',  verse: 'Négy fal között',            age: 23, distance: '3 km'  },
+      { id: 3, name: 'Móricz Zsigmond',    verse: 'Sárarany',                   age: 29, distance: '12 km' },
+      { id: 4, name: 'Karinthy Frigyes',   verse: 'Így írtok ti',               age: 21, distance: '5 km'  },
+    ];
+
+    const poetImages = {
+      'Ady Endre':         'images/ady-endre.jpg',
+      'Babits Mihály':     'images/babits-mihaly.jpg',
+      'Kosztolányi Dezső': 'images/kosztolanyi-dezso.jpg',
+      'Móricz Zsigmond':   'images/moricz-zsigmond.jpg',
+      'Karinthy Frigyes':  'images/karinthy-frigyes.jpg',
+    };
+
+    // ── QR kód ────────────────────────────────────────────────────
+    (function () {
+      const voterUrl = window.location.href.replace(/\/[^/]*\.html(\?.*)?$/, '/');
       new QRCode(document.getElementById('w-qr'), {
-        text:         url,
+        text:         voterUrl,
         width:        160,
         height:       160,
         colorDark:    '#1A0A00',
         colorLight:   '#F0E6CA',
         correctLevel: QRCode.CorrectLevel.M,
       });
-      document.getElementById('w-qr-url').textContent = url;
+      document.getElementById('w-qr-url').textContent = voterUrl;
     })();
 
-    // ── Képek ──────────────────────────────────────────────────────
-    // Tedd a képeket a public/images/ mappába ezekkel a nevekkel:
-    const poetImages = {
-      'Ady Endre':         '/images/ady-endre.jpg',
-      'Babits Mihály':     '/images/babits-mihaly.jpg',
-      'Kosztolányi Dezső': '/images/kosztolanyi-dezso.jpg',
-      'Móricz Zsigmond':   '/images/moricz-zsigmond.jpg',
-      'Karinthy Frigyes':  '/images/karinthy-frigyes.jpg',
-    };
-
-
-    // ── Jelenet-váltás ─────────────────────────────────────────────
-    let currentScene  = 'waiting';
-    let totalVoters   = 0;  // regisztrált játékosok száma
+    // ── State ─────────────────────────────────────────────────────
+    let currentScene     = 'waiting';
+    let currentPoetIndex = -1;
+    let totalVoters      = 0;
+    let currentScores    = {};
+    let lastVoteTs       = 0;
 
     function switchScene(id) {
       if (currentScene === id) return;
@@ -663,21 +635,18 @@
       currentScene = id;
     }
 
-    // ── Előadó jelenet ─────────────────────────────────────────────
+    // ── Performer scene ────────────────────────────────────────────
     function showPerformer(poet, totalScore, voteCount) {
       document.getElementById('perf-name').textContent  = poet.name;
       document.getElementById('perf-verse').textContent = poet.verse;
-      document.getElementById('perf-count').textContent = totalScore || 0;
-      const sub = document.getElementById('perf-votes-sub');
-      if (sub) sub.textContent = (voteCount || 0) + ' szavazó';
-      updateBar(totalScore || 0);
-      const photo = document.getElementById('perf-photo');
-      photo.style.display = '';
-      photo.src = poetImages[poet.name] || '';
+      document.getElementById('perf-count').textContent = totalScore;
+      document.getElementById('perf-votes-sub').textContent = voteCount + ' szavazó';
+      document.getElementById('perf-photo').src = poetImages[poet.name] || '';
+      document.getElementById('perf-photo').style.display = '';
+      updateBar(totalScore);
       switchScene('performer');
     }
 
-    // ── Szavazat bump + sáv frissítés ────────────────────────────
     function bumpCount(totalScore) {
       const el = document.getElementById('perf-count');
       el.textContent = totalScore;
@@ -689,7 +658,7 @@
     }
 
     function updateBar(totalScore) {
-      const max   = totalVoters * 2;  // minden játékos max 2 pontot adhat
+      const max   = totalVoters * 2;
       const pct   = max > 0 ? (totalScore / max) * 100 : 0;
       const fill  = document.getElementById('perf-bar-fill');
       const pctEl = document.getElementById('perf-bar-pct');
@@ -701,21 +670,31 @@
       if (maxEl) maxEl.textContent = 'max ' + max + ' pont';
     }
 
-    // ── Végeredmény jelenet ────────────────────────────────────────
-    function showResults(scores) {
-      const sorted   = [...scores].sort((a, b) => b.totalScore - a.totalScore);
-      const maxScore = sorted[0]?.totalScore || 1;
+    // ── Results scene ──────────────────────────────────────────────
+    function showResults(scoresObj) {
+      const ranked = POETS.map((p, i) => {
+        const s = scoresObj[i] || { totalScore: 0, voteCount: 0 };
+        return {
+          id:         p.id,
+          name:       p.name,
+          verse:      p.verse,
+          totalScore: s.totalScore || 0,
+          voteCount:  s.voteCount  || 0,
+          average:    s.voteCount > 0 ? +(s.totalScore / s.voteCount).toFixed(2) : 0,
+        };
+      }).sort((a, b) => b.totalScore - a.totalScore);
 
-      document.getElementById('results-list').innerHTML = sorted.map((p, i) => {
-        const pct      = (p.totalScore / maxScore) * 100;
-        const rankCls  = ['rank-1','rank-2','rank-3'][i] || 'rank-other';
-        const imgSrc   = poetImages[p.name] || '';
+      const maxScore = ranked[0]?.totalScore || 1;
+
+      document.getElementById('results-list').innerHTML = ranked.map((p, i) => {
+        const pct     = (p.totalScore / maxScore) * 100;
+        const rankCls = ['rank-1','rank-2','rank-3'][i] || 'rank-other';
         return `
           <div class="result-row" id="rr-${p.id}" data-pct="${pct}">
             <div class="result-rank ${rankCls}">${i + 1}.</div>
             <div class="result-thumb-wrap">
-              <img class="result-thumb" src="${imgSrc}" alt="${p.name}"
-                   onerror="this.outerHTML='<div class=\\'result-thumb-mono\\'>${mono}</div>'">
+              <img class="result-thumb" src="${poetImages[p.name] || ''}" alt="${p.name}"
+                   onerror="this.style.display='none'">
             </div>
             <div class="result-info">
               <div class="result-name">${p.name}</div>
@@ -735,9 +714,8 @@
 
       switchScene('results');
 
-      // Lépcsőzetes megjelenés (utolsótól az elsőig — mint egy show)
-      const reveOrder = [...sorted].reverse();
-      reveOrder.forEach((p, i) => {
+      const revOrder = [...ranked].reverse();
+      revOrder.forEach((p, i) => {
         setTimeout(() => {
           const row = document.getElementById('rr-' + p.id);
           if (!row) return;
@@ -750,30 +728,7 @@
       });
     }
 
-    // ── Állapot alkalmazása ────────────────────────────────────────
-    function applyState(s) {
-      if (s.phase === 'finished') {
-        showResults(s.scores);
-      } else if (s.phase === 'voting' && s.currentPoet) {
-        const active = (s.scores || []).find(sc => sc.isActive);
-        showPerformer(s.currentPoet, active?.totalScore || 0, active?.voteCount || 0);
-      } else {
-        switchScene('waiting');
-      }
-    }
-
-    // ── Socket events ──────────────────────────────────────────────
-    socket.on('state', s => {
-      if (s.voterCount !== undefined) totalVoters = s.voterCount;
-      applyState(s);
-    });
-
-    socket.on('voter-count', count => { totalVoters = count; });
-
-    socket.on('vote-cast', ({ rating }) => {
-      if (currentScene === 'performer') spawnVoteIcon(rating);
-    });
-
+    // ── Vote icon animation ────────────────────────────────────────
     function spawnVoteIcon(rating) {
       const fx = document.getElementById('vote-fx');
       if (!fx) return;
@@ -783,10 +738,10 @@
         2: { icon: '★', color: 'var(--gold)' },
       };
       const { icon, color } = map[rating] ?? map[1];
-      const anims  = ['vf1','vf2','vf3','vf4','vf5'];
-      const anim   = anims[Math.floor(Math.random() * anims.length)];
-      const dur    = (1.2 + Math.random() * 0.7).toFixed(2);   // 1.2–1.9s
-      const size   = (1.6 + Math.random() * 0.8).toFixed(2);   // 1.6–2.4rem
+      const anims = ['vf1','vf2','vf3','vf4','vf5'];
+      const anim  = anims[Math.floor(Math.random() * anims.length)];
+      const dur   = (1.2 + Math.random() * 0.7).toFixed(2);
+      const size  = (1.6 + Math.random() * 0.8).toFixed(2);
       const el = document.createElement('span');
       el.className = 'vote-pop';
       el.textContent = icon;
@@ -798,21 +753,50 @@
       el.addEventListener('animationend', () => el.remove(), { once: true });
     }
 
-    socket.on('scores-update', scores => {
-      const active = scores.find(s => s.isActive);
-      if (!active) return;
-      if (currentScene === 'performer') {
-        bumpCount(active.totalScore);
+    // ── Firebase: state ────────────────────────────────────────────
+    db.ref('state').on('value', snap => {
+      const s = snap.val() || {};
+      const phase = s.phase || 'waiting';
+      currentPoetIndex = (s.currentPoetIndex !== undefined) ? s.currentPoetIndex : -1;
+
+      if (phase === 'finished') {
+        showResults(currentScores);
+      } else if (phase === 'voting' && currentPoetIndex >= 0) {
+        const poet  = POETS[currentPoetIndex];
+        const score = currentScores[currentPoetIndex] || { totalScore: 0, voteCount: 0 };
+        showPerformer(poet, score.totalScore || 0, score.voteCount || 0);
       } else {
-        document.getElementById('perf-count').textContent = active.totalScore;
-        updateBar(active.totalScore);
+        switchScene('waiting');
       }
-      const sub = document.getElementById('perf-votes-sub');
-      if (sub) sub.textContent = active.voteCount + ' szavazó';
     });
 
-    socket.on('phase-change', () => socket.emit('request-state'));
-    socket.on('reset',        () => socket.emit('request-state'));
+    // ── Firebase: scores ───────────────────────────────────────────
+    db.ref('scores').on('value', snap => {
+      currentScores = snap.val() || {};
+      if (currentScene === 'performer' && currentPoetIndex >= 0) {
+        const score = currentScores[currentPoetIndex] || { totalScore: 0, voteCount: 0 };
+        bumpCount(score.totalScore || 0);
+        document.getElementById('perf-votes-sub').textContent = (score.voteCount || 0) + ' szavazó';
+      }
+    });
+
+    // ── Firebase: voter count ──────────────────────────────────────
+    db.ref('voters').on('value', snap => {
+      totalVoters = snap.numChildren();
+      if (currentScene === 'performer' && currentPoetIndex >= 0) {
+        const score = currentScores[currentPoetIndex] || { totalScore: 0, voteCount: 0 };
+        updateBar(score.totalScore || 0);
+      }
+    });
+
+    // ── Firebase: vote animations ──────────────────────────────────
+    db.ref('lastVote').on('value', snap => {
+      const data = snap.val();
+      if (!data || !data.ts) return;
+      if (data.ts <= lastVoteTs) return;
+      lastVoteTs = data.ts;
+      if (currentScene === 'performer') spawnVoteIcon(data.rating);
+    });
   </script>
 </body>
 </html>
