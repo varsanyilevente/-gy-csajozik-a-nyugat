@@ -229,6 +229,31 @@
       color: var(--ink-light);
       margin-top: 0.2rem;
     }
+
+    .page-nav {
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .page-nav a {
+      color: var(--ink-light);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .page-nav a:hover {
+      color: var(--ink);
+      border-bottom-color: var(--ink-light);
+    }
+
+    .page-nav-sep { opacity: 0.4; }
   </style>
 </head>
 <body class="voter-page">
@@ -249,6 +274,11 @@
         <input type="text" id="name-input" placeholder="Az Ön neve…" maxlength="50" autocomplete="off" autocorrect="off">
         <button type="submit" class="btn-primary">Belépés</button>
       </form>
+      <nav class="page-nav">
+        <a href="display.html">Kivetítő</a>
+        <span class="page-nav-sep">·</span>
+        <a href="admin.html">Admin</a>
+      </nav>
     </div>
 
     <div id="screen-waiting" class="screen info-screen">
