@@ -9,9 +9,11 @@
     html, body { margin: 0; padding: 0; }
 
     body {
-      /* JS beállítja a pontos magasságot visualViewport alapján.
-         Ez az egyetlen megbízható módszer Chrome/Android URL sáv + nav bar esetén. */
-      height: 100dvh;          /* CSS fallback ha a JS nem fut le */
+      /* position:fixed + inset:0 = pontosan a látható visual viewport.
+         Chrome Android-on ez ZÁRJA KI az URL sávot és a nav sávot.
+         Nincs szükség JS height override-ra — az csak ront. */
+      position: fixed;
+      inset: 0;
       overflow: hidden;
       touch-action: none;
       display: flex;
@@ -386,15 +388,6 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    // visualViewport.height = a valódi látható pixel, URL sáv + nav bar nélkül.
-    // Ez megbízhatóbb mint window.innerHeight vagy 100dvh Android Chrome-on.
-    function pinBodyHeight() {
-      const h = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-      document.body.style.height = Math.round(h) + 'px';
-    }
-    pinBodyHeight();
-    (window.visualViewport || window).addEventListener('resize', pinBodyHeight);
-
     const socket = io();
 
     let voterName = null;
