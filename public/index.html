@@ -28,6 +28,42 @@
 
     body.voting-mode .masthead { display: none; }
 
+    /* ── Voting header sáv ──────────────────────────────────────── */
+    .voting-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      padding: 0.22rem 1rem;
+      background: var(--paper);
+      border-bottom: 3px double var(--border);
+    }
+
+    .vh-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 1.05rem;
+      letter-spacing: 0.35em;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .vh-eyebrow, .vh-sub {
+      font-family: 'IM Fell English', serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-mid);
+    }
+
+    .vh-sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+      opacity: 0.4;
+    }
+
     main {
       flex: 1;
       min-height: 0;
@@ -195,6 +231,7 @@
       padding-bottom: max(12px, env(safe-area-inset-bottom));
       flex-shrink: 0;
       background: var(--paper);
+      border-top: 3px double var(--border);
     }
 
     .action-item { display: flex; flex-direction: column; align-items: center; }
@@ -284,6 +321,13 @@
     </div>
 
     <div id="screen-voting" class="screen">
+      <div class="voting-header">
+        <span class="vh-eyebrow">I. ÉVF · 1908</span>
+        <div class="vh-sep"></div>
+        <span class="vh-title">NYUGAT</span>
+        <div class="vh-sep"></div>
+        <span class="vh-sub">Szavazás</span>
+      </div>
       <div class="card-wrap">
         <div id="tinder-card" class="tinder-card">
           <img id="card-photo" class="card-photo" src="" alt="">
@@ -303,15 +347,27 @@
       </div>
       <div class="action-row">
         <div class="action-item">
-          <button class="action-btn btn-nope"  id="btn-nope">✕</button>
+          <button class="action-btn btn-nope" id="btn-nope">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
           <div class="btn-hint">0 pont</div>
         </div>
         <div class="action-item">
-          <button class="action-btn btn-super" id="btn-super">★</button>
+          <button class="action-btn btn-super" id="btn-super">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </button>
           <div class="btn-hint">2 pont</div>
         </div>
         <div class="action-item">
-          <button class="action-btn btn-like"  id="btn-like">❤</button>
+          <button class="action-btn btn-like" id="btn-like">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
           <div class="btn-hint">1 pont</div>
         </div>
       </div>
