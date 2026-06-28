@@ -359,9 +359,8 @@
     .vote-pop {
       position: absolute;
       bottom: 10px;
-      font-size: 2rem;
       pointer-events: none;
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+      filter: drop-shadow(0 3px 10px rgba(0,0,0,0.55));
       z-index: 20;
     }
 
@@ -510,6 +509,21 @@
   </style>
 </head>
 <body>
+
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <filter id="ink-press" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="3" seed="6" result="en"/>
+      <feDisplacementMap in="SourceGraphic" in2="en" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.22" numOctaves="4" seed="14" result="gn"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  8 0 0 0 -5" in="gn" result="m"/>
+      <feComposite in="d" in2="m" operator="out"/>
+    </filter>
+    <clipPath id="scp-vfx">
+      <path d="M50 3 L61.2 34.6 L94.7 35.5 L68.1 55.9 L77.6 88.1 L50 69 L22.4 88.1 L31.9 55.9 L5.3 35.5 L38.8 34.6 Z"/>
+    </clipPath>
+  </defs>
+</svg>
 
   <!-- JELENET 1: VÁRAKOZÁS -->
   <div id="scene-waiting" class="scene active">
@@ -732,22 +746,53 @@
     function spawnVoteIcon(rating) {
       const fx = document.getElementById('vote-fx');
       if (!fx) return;
-      const map = {
-        0: { icon: '✕', color: 'var(--red)' },
-        1: { icon: '❤', color: '#c0392b' },
-        2: { icon: '★', color: 'var(--gold)' },
-      };
-      const { icon, color } = map[rating] ?? map[1];
-      const anims = ['vf1','vf2','vf3','vf4','vf5'];
-      const anim  = anims[Math.floor(Math.random() * anims.length)];
-      const dur   = (1.2 + Math.random() * 0.7).toFixed(2);
-      const size  = (1.6 + Math.random() * 0.8).toFixed(2);
-      const el = document.createElement('span');
+      const colors = { 0: 'var(--red)', 1: 'var(--ink)', 2: 'var(--gold)' };
+      const color  = colors[rating] ?? colors[1];
+      const sz     = Math.round(52 + Math.random() * 32);
+
+      const nopeSvg = `<svg viewBox="0 0 22 22" width="${sz}" height="${sz}">
+        <g filter="url(#ink-press)" stroke="currentColor" stroke-width="5.5" stroke-linecap="square" fill="none">
+          <path d="M4.5 4.5 C7.5 7.5 14.5 14.5 17.5 17.5"/>
+          <path d="M17.5 4.5 C14.5 7.5 7.5 14.5 4.5 17.5"/>
+        </g></svg>`;
+
+      const likeSvg = `<svg viewBox="0 0 24 24" width="${sz}" height="${sz}">
+        <path filter="url(#ink-press)" fill="currentColor"
+          d="M12 20.5 C11 20 4 15 3.5 10 C3 7 4.5 4.5 7.5 4.5 C9.5 4.5 11 6 12 8 C13 6 14.5 4.5 16.5 4.5 C19.5 4.5 21 7 20.5 10 C20 15 13 20 12 20.5 Z"/>
+        </svg>`;
+
+      const starSvg = `<svg viewBox="0 0 100 100" width="${sz}" height="${sz}">
+        <g filter="url(#ink-press)">
+          <path d="M50 3 L61.2 34.6 L94.7 35.5 L68.1 55.9 L77.6 88.1 L50 69 L22.4 88.1 L31.9 55.9 L5.3 35.5 L38.8 34.6 Z" fill="currentColor"/>
+          <g clip-path="url(#scp-vfx)" stroke="#FAF5E8" stroke-width="2.2" fill="none" opacity="0.5">
+            <line x1="50" y1="50" x2="35" y2="-12"/><line x1="50" y1="50" x2="43" y2="-10"/>
+            <line x1="50" y1="50" x2="50" y2="-8"/><line x1="50" y1="50" x2="57" y2="-10"/>
+            <line x1="50" y1="50" x2="65" y2="-12"/>
+            <line x1="50" y1="50" x2="106" y2="12"/><line x1="50" y1="50" x2="109" y2="24"/>
+            <line x1="50" y1="50" x2="110" y2="36"/><line x1="50" y1="50" x2="109" y2="48"/>
+            <line x1="50" y1="50" x2="105" y2="58"/>
+            <line x1="50" y1="50" x2="106" y2="82"/><line x1="50" y1="50" x2="104" y2="92"/>
+            <line x1="50" y1="50" x2="99" y2="101"/><line x1="50" y1="50" x2="92" y2="108"/>
+            <line x1="50" y1="50" x2="82" y2="112"/>
+            <line x1="50" y1="50" x2="18" y2="112"/><line x1="50" y1="50" x2="8" y2="108"/>
+            <line x1="50" y1="50" x2="1" y2="101"/><line x1="50" y1="50" x2="-4" y2="92"/>
+            <line x1="50" y1="50" x2="-6" y2="82"/>
+            <line x1="50" y1="50" x2="-5" y2="58"/><line x1="50" y1="50" x2="-9" y2="48"/>
+            <line x1="50" y1="50" x2="-10" y2="36"/><line x1="50" y1="50" x2="-9" y2="24"/>
+            <line x1="50" y1="50" x2="-6" y2="12"/>
+          </g>
+        </g></svg>`;
+
+      const svgMap = { 0: nopeSvg, 1: likeSvg, 2: starSvg };
+      const anims  = ['vf1','vf2','vf3','vf4','vf5'];
+      const anim   = anims[Math.floor(Math.random() * anims.length)];
+      const dur    = (1.2 + Math.random() * 0.7).toFixed(2);
+
+      const el = document.createElement('div');
       el.className = 'vote-pop';
-      el.textContent = icon;
-      el.style.color = color;
-      el.style.fontSize = size + 'rem';
-      el.style.left = (8 + Math.random() * 84) + '%';
+      el.innerHTML = svgMap[rating] ?? svgMap[1];
+      el.style.color     = color;
+      el.style.left      = (8 + Math.random() * 84) + '%';
       el.style.animation = `${anim} ${dur}s ease-out forwards`;
       fx.appendChild(el);
       el.addEventListener('animationend', () => el.remove(), { once: true });

@@ -184,21 +184,24 @@
       position: absolute;
       padding: 6px 14px;
       border: 4px solid;
-      border-radius: 6px;
+      border-radius: 2px;
       font-family: 'Playfair Display', serif;
       font-size: 2rem;
       font-weight: 900;
       letter-spacing: 0.05em;
       opacity: 0;
       pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .stamp-like  { top: 28px; right: 20px; color: #4CAF50; border-color: #4CAF50; transform: rotate(-12deg); }
-    .stamp-nope  { top: 28px; left: 20px;  color: #F44336; border-color: #F44336; transform: rotate(12deg); }
+    .stamp-like  { top: 28px; right: 20px; color: var(--ink);  border-color: var(--ink);  transform: rotate(-12deg); }
+    .stamp-nope  { top: 28px; left: 20px;  color: var(--red);  border-color: var(--red);  transform: rotate(12deg); }
     .stamp-super {
       bottom: 110px; left: 50%;
       transform: translateX(-50%) rotate(-4deg);
-      color: #2196F3; border-color: #2196F3;
+      color: var(--gold); border-color: var(--gold);
       font-size: 1.5rem; white-space: nowrap;
     }
 
@@ -345,9 +348,52 @@
         <div id="tinder-card" class="tinder-card">
           <img id="card-photo" class="card-photo" src="" alt="">
           <div class="card-gradient"></div>
-          <div id="stamp-like"  class="swipe-stamp stamp-like">LIKE ❤</div>
-          <div id="stamp-nope"  class="swipe-stamp stamp-nope">NOPE ✕</div>
-          <div id="stamp-super" class="swipe-stamp stamp-super">★ SUPER LIKE</div>
+          <div id="stamp-like" class="swipe-stamp stamp-like">
+            LIKE
+            <svg viewBox="0 0 24 24" width="30" height="30">
+              <path filter="url(#ink-press)" fill="currentColor"
+                d="M12 20.5 C11 20 4 15 3.5 10 C3 7 4.5 4.5 7.5 4.5 C9.5 4.5 11 6 12 8 C13 6 14.5 4.5 16.5 4.5 C19.5 4.5 21 7 20.5 10 C20 15 13 20 12 20.5 Z"/>
+            </svg>
+          </div>
+          <div id="stamp-nope" class="swipe-stamp stamp-nope">
+            <svg viewBox="0 0 22 22" width="28" height="28">
+              <g filter="url(#ink-press)" stroke="currentColor" stroke-width="5.5" stroke-linecap="square" fill="none">
+                <path d="M4.5 4.5 C7.5 7.5 14.5 14.5 17.5 17.5"/>
+                <path d="M17.5 4.5 C14.5 7.5 7.5 14.5 4.5 17.5"/>
+              </g>
+            </svg>
+            NOPE
+          </div>
+          <div id="stamp-super" class="swipe-stamp stamp-super">
+            <svg viewBox="0 0 100 100" width="26" height="26">
+              <defs>
+                <clipPath id="scp-st">
+                  <path d="M50 3 L61.2 34.6 L94.7 35.5 L68.1 55.9 L77.6 88.1 L50 69 L22.4 88.1 L31.9 55.9 L5.3 35.5 L38.8 34.6 Z"/>
+                </clipPath>
+              </defs>
+              <g filter="url(#ink-press)">
+                <path d="M50 3 L61.2 34.6 L94.7 35.5 L68.1 55.9 L77.6 88.1 L50 69 L22.4 88.1 L31.9 55.9 L5.3 35.5 L38.8 34.6 Z" fill="currentColor"/>
+                <g clip-path="url(#scp-st)" stroke="#FAF5E8" stroke-width="2.2" fill="none" opacity="0.5">
+                  <line x1="50" y1="50" x2="35" y2="-12"/><line x1="50" y1="50" x2="43" y2="-10"/>
+                  <line x1="50" y1="50" x2="50" y2="-8"/><line x1="50" y1="50" x2="57" y2="-10"/>
+                  <line x1="50" y1="50" x2="65" y2="-12"/>
+                  <line x1="50" y1="50" x2="106" y2="12"/><line x1="50" y1="50" x2="109" y2="24"/>
+                  <line x1="50" y1="50" x2="110" y2="36"/><line x1="50" y1="50" x2="109" y2="48"/>
+                  <line x1="50" y1="50" x2="105" y2="58"/>
+                  <line x1="50" y1="50" x2="106" y2="82"/><line x1="50" y1="50" x2="104" y2="92"/>
+                  <line x1="50" y1="50" x2="99" y2="101"/><line x1="50" y1="50" x2="92" y2="108"/>
+                  <line x1="50" y1="50" x2="82" y2="112"/>
+                  <line x1="50" y1="50" x2="18" y2="112"/><line x1="50" y1="50" x2="8" y2="108"/>
+                  <line x1="50" y1="50" x2="1" y2="101"/><line x1="50" y1="50" x2="-4" y2="92"/>
+                  <line x1="50" y1="50" x2="-6" y2="82"/>
+                  <line x1="50" y1="50" x2="-5" y2="58"/><line x1="50" y1="50" x2="-9" y2="48"/>
+                  <line x1="50" y1="50" x2="-10" y2="36"/><line x1="50" y1="50" x2="-9" y2="24"/>
+                  <line x1="50" y1="50" x2="-6" y2="12"/>
+                </g>
+              </g>
+            </svg>
+            SUPER LIKE
+          </div>
           <div class="card-info">
             <div class="card-name-row">
               <span id="card-name" class="card-name"></span>
