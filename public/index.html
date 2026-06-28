@@ -121,9 +121,9 @@
     .loading-dots { font-size: 1.5rem; color: var(--ink-light); margin-top: 1rem; }
 
     .voted-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 0.5rem; }
-    .voted-icon.nope  { color: #F44336; }
-    .voted-icon.like  { color: #4CAF50; }
-    .voted-icon.super { color: #2196F3; }
+    .voted-icon.nope  { color: var(--red); }
+    .voted-icon.like  { color: var(--ink); }
+    .voted-icon.super { color: var(--gold); }
 
     /* ── TINDER CARD SCREEN ──────────────────────────────────────── */
     #screen-voting { display: none; }
@@ -254,9 +254,9 @@
 
     .action-btn:active { transform: scale(0.88); box-shadow: none; }
 
-    .btn-nope  { border-color: #F44336; color: #F44336; }
-    .btn-like  { border-color: #4CAF50; color: #4CAF50; width: 58px; height: 58px; font-size: 1.5rem; }
-    .btn-super { border-color: #2196F3; color: #2196F3; }
+    .btn-nope  { border-color: var(--red);  color: var(--red); }
+    .btn-like  { border-color: var(--ink);  color: var(--ink);  width: 58px; height: 58px; font-size: 1.5rem; }
+    .btn-super { border-color: var(--gold); color: var(--gold); }
 
     .btn-hint {
       font-size: 0.55rem;
@@ -348,24 +348,25 @@
       <div class="action-row">
         <div class="action-item">
           <button class="action-btn btn-nope" id="btn-nope">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            <svg viewBox="0 0 22 22" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <path d="M5 5 C7.5 7.5 14.5 14.5 17 17"/>
+              <path d="M17 5 C14.5 7.5 7.5 14.5 5 17"/>
             </svg>
           </button>
           <div class="btn-hint">0 pont</div>
         </div>
         <div class="action-item">
           <button class="action-btn btn-super" id="btn-super">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path d="M12 2 L14.5 7.7 L20.7 7 L17 12 L20.7 17 L14.5 16.3 L12 22 L9.5 16.3 L3.3 17 L7 12 L3.3 7 L9.5 7.7 Z"/>
             </svg>
           </button>
           <div class="btn-hint">2 pont</div>
         </div>
         <div class="action-item">
           <button class="action-btn btn-like" id="btn-like">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="0.4" stroke-linejoin="round">
+              <path d="M12 20 L4.5 12.5 C2.2 10 2.5 6 5.5 4.8 C7.5 4 9.5 5 11 7.5 L12 9 L13 7.5 C14.5 5 16.5 4 18.5 4.8 C21.5 6 21.8 10 19.5 12.5 Z"/>
             </svg>
           </button>
           <div class="btn-hint">1 pont</div>
