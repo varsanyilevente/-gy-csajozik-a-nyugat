@@ -746,7 +746,7 @@
     function spawnVoteIcon(rating) {
       const fx = document.getElementById('vote-fx');
       if (!fx) return;
-      const colors = { 0: 'var(--red)', 1: 'var(--ink)', 2: 'var(--gold)' };
+      const colors = { 0: 'var(--red)', 1: 'var(--blue)', 2: 'var(--gold)' };
       const color  = colors[rating] ?? colors[1];
       const sz     = Math.round(52 + Math.random() * 32);
 
