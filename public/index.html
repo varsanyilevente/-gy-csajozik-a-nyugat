@@ -122,7 +122,7 @@
 
     .voted-icon { font-size: 3.5rem; line-height: 1; margin-bottom: 0.5rem; }
     .voted-icon.nope  { color: var(--red); }
-    .voted-icon.like  { color: var(--ink); }
+    .voted-icon.like  { color: var(--blue); }
     .voted-icon.super { color: var(--gold); }
 
     /* ── TINDER CARD SCREEN ──────────────────────────────────────── */
@@ -196,7 +196,7 @@
       gap: 8px;
     }
 
-    .stamp-like  { top: 28px; right: 20px; color: var(--ink);  border-color: var(--ink);  transform: rotate(-12deg); }
+    .stamp-like  { top: 28px; right: 20px; color: var(--blue); border-color: var(--blue); transform: rotate(-12deg); }
     .stamp-nope  { top: 28px; left: 20px;  color: var(--red);  border-color: var(--red);  transform: rotate(12deg); }
     .stamp-super {
       bottom: 110px; left: 50%;
@@ -258,7 +258,7 @@
     .action-btn:active { transform: scale(0.88); box-shadow: none; }
 
     .btn-nope  { border-color: var(--red);  color: var(--red); }
-    .btn-like  { border-color: var(--ink);  color: var(--ink);  width: 58px; height: 58px; font-size: 1.5rem; }
+    .btn-like  { border-color: var(--blue); color: var(--blue); width: 58px; height: 58px; font-size: 1.5rem; }
     .btn-super { border-color: var(--gold); color: var(--gold); }
 
     .btn-hint {
@@ -634,8 +634,14 @@
       const nk = nameKey(voterName), poetIdx = currentPoetIndex;
       try {
         await db.ref('scores/' + poetIdx).transaction(s => {
-          if (!s) s = { totalScore: 0, voteCount: 0 };
-          return { totalScore: s.totalScore + rating, voteCount: s.voteCount + 1 };
+          if (!s) s = { totalScore: 0, voteCount: 0, nope: 0, like: 0, superlike: 0 };
+          return {
+            totalScore: (s.totalScore || 0) + rating,
+            voteCount:  (s.voteCount  || 0) + 1,
+            nope:       (s.nope       || 0) + (rating === 0 ? 1 : 0),
+            like:       (s.like       || 0) + (rating === 1 ? 1 : 0),
+            superlike:  (s.superlike  || 0) + (rating === 2 ? 1 : 0),
+          };
         });
         await db.ref('voters/' + nk + '/hasVoted').set(true);
         db.ref('lastVote').set({ rating, ts: firebase.database.ServerValue.TIMESTAMP });

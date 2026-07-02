@@ -56,6 +56,17 @@
     .poet-card-info .poet-verse-admin { font-style: italic; font-size: 0.85rem; color: var(--ink-light); }
     .poet-card-info .poet-score-admin { font-size: 0.8rem; color: var(--ink-mid); margin-top: 0.25rem; }
 
+    .vote-breakdown {
+      display: inline-flex;
+      gap: 0.75rem;
+      margin-top: 0.2rem;
+      font-size: 0.78rem;
+      color: var(--ink-mid);
+    }
+    .vb-nope  { color: var(--red); }
+    .vb-like  { color: #1F3A6E; }
+    .vb-super { color: var(--gold); }
+
     .poet-card-btn { flex-shrink: 0; }
 
     .btn-open {
@@ -157,7 +168,7 @@
       <div id="poet-list"></div>
 
       <div class="global-controls">
-        <button class="btn-ctrl" id="btn-close">Szavazás lezárása</button>
+        <button class="btn-ctrl" id="btn-close">Várakozó képernyő</button>
         <button class="btn-ctrl" id="btn-finish">Verseny befejezése</button>
         <button class="btn-ctrl danger" id="btn-reset">Teljes visszaállítás</button>
       </div>
@@ -267,6 +278,11 @@
                 <div class="poet-verse-admin">${p.verse}</div>
                 <div class="poet-score-admin">
                   ${s.totalScore || 0} pont · ${s.voteCount || 0} szavazat · ⌀ ${avg}
+                </div>
+                <div class="vote-breakdown">
+                  <span class="vb-nope">✕ ${s.nope || 0} nope</span>
+                  <span class="vb-like">❤ ${s.like || 0} like</span>
+                  <span class="vb-super">★ ${s.superlike || 0} super</span>
                 </div>
               </div>
               <div class="poet-card-btn">
